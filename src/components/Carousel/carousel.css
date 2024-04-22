@@ -1,0 +1,107 @@
+/* .slick-slide {
+  height: inherit !important;
+  display: flex !important;
+  justify-content: center;
+} */
+
+/* .slider {
+  max-height: 400px;
+} */
+
+/* .slider img {
+  width: 100%;
+  height: auto;
+} */
+
+.slick-arrow.slick-prev,
+.slick-arrow.slick-next {
+  width: 20px;
+  height: 54px;
+  z-index: 1;
+  display: none;
+}
+
+.slick-arrow {
+  opacity: 0;
+  transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -webkit-transition: all 0.25s ease-in-out;
+}
+
+.menu__category:hover .slick-arrow {
+  opacity: 1;
+}
+
+.slick-arrow.slick-prev {
+  top: 40%;
+  left: 0;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+.slick-arrow.slick-next {
+  top: 40%;
+  right: 0;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
+}
+
+/* this targets the classname of the nextarrow.js */
+.slick-arrow.nextArrow {
+  top: 50%;
+  right: 0.2rem;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
+}
+
+/* this targets the classname of the prevarrow.js */
+.slick-arrow.Prevarrow {
+  top: 50%;
+  left: 0.1rem;
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
+.slick-prev::before,
+.slick-next::before {
+  content: '';
+  display: none;
+}
+
+/* the parent */
+.slick-list {
+  margin-left: -27px;
+}
+
+/* add margins for card */
+.slick-slide > div {
+  margin: 0 0.5rem;
+}
+
+.slick-slider {
+  margin: 15px auto 25px;
+  width: auto;
+}
+
+.slick-dots li {
+  margin: 0 5px;
+  background: #ffffff;
+  opacity: 1;
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+}
+
+/* .slick-dots li button:before {
+  content: ' ';
+  background: #ffffff;
+  opacity: 1;
+  height: 2px;
+  width: 10px;
+} */
+/* .slick-dots li.slick-active button:before {
+  content: ' ';
+  background: #0080ad;
+  opacity: 1;
+  height: 4px;
+  width: 20px;
+} */

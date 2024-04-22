@@ -1,0 +1,102 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+button {
+  @apply py-1 px-2 rounded bg-slate-50;
+}
+
+.login-Btn {
+  @apply hover:bg-slate-200;
+}
+
+.moreBtn {
+  @apply block bg-slate-400 p-2 mt-4;
+}
+
+header {
+  @apply flex  p-2 border-2 border-indigo-500;
+}
+
+header nav {
+  @apply flex gap-4 ml-16;
+}
+
+header .btns {
+  @apply flex gap-4 ml-auto;
+}
+
+.jumbotron {
+  @apply bg-green-400;
+}
+.jumbotron main {
+  @apply mt-8  grid md:grid-cols-2;
+}
+
+.jumbotron .left {
+  @apply p-8;
+}
+
+.jumbotron h4 {
+  @apply bg-slate-100 opacity-40 p-4 border-4;
+}
+
+.jumbotron h1 {
+  @apply text-6xl text-slate-500 uppercase font-semibold  my-4 md:text-4xl xl:text-7xl;
+}
+
+.jumbotron .left span {
+  @apply my-4;
+}
+
+.jumbotron .right {
+  @apply mt-4 md:mt-0;
+}
+
+.feature__1 .top {
+  @apply mt-24 flex flex-col md:flex-row;
+}
+
+.feature__1 .top p {
+  @apply text-2xl  font-semibold w-[30rem];
+}
+
+.feature__1 .top span {
+  @apply text-lg w-[40rem] ml-auto;
+}
+
+.feature__1 .bottom {
+  @apply mt-8 flex flex-col gap-8 md:flex-row justify-between;
+}
+
+.feature__1 .bottom .card {
+  @apply p-8 shadow-md shadow-slate-500/30 rounded-md;
+}
+
+.feature__1 .bottom .card span {
+  @apply p-2 my-4 text-green-400 bg-slate-200 rounded-full;
+}
+
+.feature__1 .bottom .card h4 {
+  @apply text-lg font-semibold text-slate-600;
+}
+
+.feature__2 {
+  @apply mt-32 flex flex-col justify-between md:flex-row;
+}
+
+.feature__2 p {
+  @apply text-2xl font-semibold;
+}
+
+.feature__2 span {
+  @apply text-lg;
+}
+
+.feature__3 {
+  @apply my-16 flex gap-16  flex-col md:flex-row justify-between;
+}
+
+.feature__3 .left {
+  @apply bg-slate-50 shadow-md shadow-slate-500/30 rounded-md p-8;
+}
