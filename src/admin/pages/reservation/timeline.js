@@ -23,10 +23,11 @@ function Timeline() {
       // console.log(res.data[0]?.tables)
       setTables(res.data[0]?.tables)
       //  setOrders(res.data[0]?.orders)
-    } else {
-      false
-      // console.log(res.error)
     }
+
+    // else {
+    //   console.log(res.error)
+    // }
   }
 
   return (

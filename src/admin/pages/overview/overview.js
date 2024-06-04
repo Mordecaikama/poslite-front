@@ -58,7 +58,7 @@ function Overview() {
   useEffect(() => {
     getOrderOverview()
     getAllOp()
-    getgraphdata()
+    // getgraphdata()
   }, [dt, operator])
 
   const getOrderOverview = async () => {
@@ -94,16 +94,15 @@ function Overview() {
 
     const res = await OrdersGraph(user?._id, user?.user, filter)
 
-    if (res) {
-      if (res.data) {
-        false
-        // console.log(res.data)
-        // const proc = res.data[0]?.totalData.filter(
-        //   (item) => item?.status === 'Processing'
-        // )
-        // console.log(proc)
-      }
-    }
+    // if (res) {
+    // if (res.data) {
+    // console.log(res.data)
+    // const proc = res.data[0]?.totalData.filter(
+    //   (item) => item?.status === 'Processing'
+    // )
+    // console.log(proc)
+    // }
+    // }
   }
 
   const getAllOp = async () => {
