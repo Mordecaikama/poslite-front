@@ -76,9 +76,6 @@ function Menu() {
     if (pin.length < 4) {
       let pinNumber = pin + value
       setPin(pinNumber)
-      if (pin.length + 1 === 4) {
-        console.log(pinNumber)
-      }
     }
   }
 
@@ -124,10 +121,8 @@ function Menu() {
     const res = await getProducts(organi?._id)
 
     if (res) {
-      console.log(res.data?.products)
+      // console.log(res.data?.products)
       setProducts(res.data?.products)
-    } else {
-      console.log(res)
     }
   }
   const categoryClick = async (cate) => {
@@ -137,8 +132,6 @@ function Menu() {
 
     if (res) {
       setValues({ ...values, catProd: res.data?.products, catName: cate?.name })
-    } else {
-      console.log(res)
     }
   }
 
@@ -207,8 +200,6 @@ function Menu() {
       }
 
       //  setOrders(res.data[0]?.orders)
-    } else {
-      console.log(res)
     }
   }
 

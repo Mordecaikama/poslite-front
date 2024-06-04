@@ -32,15 +32,11 @@ export const Signup = async (user) => {
 export const getUsers = async (organiId, userId, filter) => {
   // userinfo in an object e.g {username,password}
 
-  try {
-    const query = queryString.stringify(filter)
-    const data = await axios.get(`${API}/user/${organiId}/${userId}?${query}`)
+  const query = queryString.stringify(filter)
+  const data = await axios.get(`${API}/user/${organiId}/${userId}?${query}`)
 
-    if (data) {
-      return data.data
-    }
-  } catch (error) {
-    console.log('error ', error)
+  if (data) {
+    return data.data
   }
 }
 
@@ -48,15 +44,11 @@ export const getUsers = async (organiId, userId, filter) => {
 export const getOperators = async (organiId, userId, filter) => {
   // userinfo in an object e.g {username,password}
 
-  try {
-    const query = queryString.stringify(filter)
-    const data = await axios.get(`${API}/users/${organiId}/${userId}?${query}`)
+  const query = queryString.stringify(filter)
+  const data = await axios.get(`${API}/users/${organiId}/${userId}?${query}`)
 
-    if (data) {
-      return data.data
-    }
-  } catch (error) {
-    console.log('error ', error)
+  if (data) {
+    return data.data
   }
 }
 
@@ -104,7 +96,7 @@ export const checkOldPassword = async (userId, values) => {
 export const deleteUser = async (userId, organiId, operator) => {
   // userinfo in an object e.g {username,password}
   const query = queryString.stringify(operator)
-  console.log(userId, organiId, operator)
+
   const data = await axios.delete(
     `${API}/user/${userId}/${organiId}?${query}`,
     operator

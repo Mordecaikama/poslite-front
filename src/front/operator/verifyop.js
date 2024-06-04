@@ -30,7 +30,7 @@ const VerifyOperator = () => {
   } = values
 
   const params = useParams()
-  console.log(params)
+  // console.log(params)
 
   const handleChange = (name) => (event) => {
     // resets all error
@@ -57,8 +57,6 @@ const VerifyOperator = () => {
       if (res) {
         if (res.data) {
           navigate('/signin')
-        } else {
-          console.log(res)
         }
       }
     } else {

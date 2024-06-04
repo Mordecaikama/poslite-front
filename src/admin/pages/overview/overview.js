@@ -77,8 +77,6 @@ function Overview() {
       if (res.data) {
         // console.log(res.data)
         setOrders(res.data)
-      } else {
-        console.log(res, 'error')
       }
     }
   }
@@ -98,13 +96,12 @@ function Overview() {
 
     if (res) {
       if (res.data) {
-        console.log(res.data)
+        false
+        // console.log(res.data)
         // const proc = res.data[0]?.totalData.filter(
         //   (item) => item?.status === 'Processing'
         // )
         // console.log(proc)
-      } else {
-        console.log(res, 'error')
       }
     }
   }

@@ -20,11 +20,12 @@ function Timeline() {
     // console.log(res)
 
     if (res.data) {
-      console.log(res.data[0]?.tables)
+      // console.log(res.data[0]?.tables)
       setTables(res.data[0]?.tables)
       //  setOrders(res.data[0]?.orders)
     } else {
-      console.log(res.error)
+      false
+      // console.log(res.error)
     }
   }
 

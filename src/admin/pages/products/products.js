@@ -119,8 +119,6 @@ function Products() {
         setHide({ ...hide, manydel: !hide.manydel })
         getAllproducts()
         setNotification({ ...notification, manydel: !notification.manydel })
-      } else {
-        console.log(res.error)
       }
     }
   }

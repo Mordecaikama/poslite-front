@@ -45,7 +45,7 @@ function Profile() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('something is goin on ')
+    // console.log('something is goin on ')
     upOrganisation(form)
   }
 

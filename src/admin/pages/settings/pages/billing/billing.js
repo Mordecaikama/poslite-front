@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 function Billing() {
   const [pricing, setPricing] = useState({
@@ -14,9 +14,9 @@ function Billing() {
   const ks = pricing && Object.keys(pricing)
   // console.log(ks)
 
-  useEffect(() => {
-    console.log('fetch data from db')
-  }, [])
+  // useEffect(() => {
+  //   console.log('fetch data from db')
+  // }, [])
 
   return (
     <div className='container billing_container '>

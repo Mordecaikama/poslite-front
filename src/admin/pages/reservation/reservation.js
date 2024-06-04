@@ -114,7 +114,8 @@ function Reservation() {
         getAlltables()
       })
       .catch((error) => {
-        console.log(error)
+        false
+        // console.log(error)
       })
   }
   const handleTableCheckinYes = async () => {
