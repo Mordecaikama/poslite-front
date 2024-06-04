@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API } from '../../config'
+import queryString from 'query-string'
 
 export const getProduct = async (productId, userId) => {
   // userinfo in an object e.g {username,password}
@@ -43,9 +44,10 @@ export const deleteProduct = async (productId, organiId, userId) => {
     return data.data
   }
 }
-export const getProducts = async (organiId) => {
+export const getProducts = async (organiId, query) => {
   // userinfo in an object e.g {username,password}
-  const data = await axios.get(`${API}/products/${organiId}`)
+  const querys = queryString.stringify(query)
+  const data = await axios.get(`${API}/products/${organiId}?${querys}`)
 
   if (data) {
     return data.data

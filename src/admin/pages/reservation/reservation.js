@@ -200,7 +200,7 @@ function Reservation() {
               <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
             </div>
             <span className='material-icons-sharp arrow-down'>expand_more</span>
-            <span>{opTyp?.name}</span>
+            <span>{opTyp?.name?.split(' ')[0]}</span>
 
             <div className='dropdown'></div>
           </div>
@@ -261,7 +261,7 @@ function Reservation() {
             <span className='reserved__time'>-</span>
           </div> */}
 
-          {JSON.stringify(tbst)}
+          {/* {JSON.stringify(tbst)} */}
         </div>
 
         <div className='reservation__footer'>

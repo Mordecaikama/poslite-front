@@ -11,6 +11,7 @@ function LoginForm() {
     emailError: '',
     pwdError: '',
     error: '',
+    accError: '',
   })
 
   //navigate
@@ -24,7 +25,7 @@ function LoginForm() {
 
   const [status, setStatus] = useState(false)
 
-  const { email, password, emailError, pwdError, error } = values
+  const { email, password, emailError, pwdError, error, accError } = values
 
   const removechange = () => {
     setValues({ ...values, password: values.password.slice(0, -1) })
@@ -37,11 +38,10 @@ function LoginForm() {
   }
 
   const handlePin = async (e, val) => {
-    console.log(val)
     // adds the pin numbers in a string format
     if (password.length < 4) {
       let pinNumber = password + val
-      console.log(pinNumber)
+
       setValues({ ...values, password: pinNumber })
       if (password.length + 1 === 4) {
         handleSubmit(e, pinNumber)
@@ -55,7 +55,6 @@ function LoginForm() {
     const res = await loginuser({ email, password: !val ? password : val })
     if (res) {
       if (res.data) {
-        // console.log(res.data)
         authenticate('user', res.data.data)
         authenticate('token', res.data?.token)
         navigate('/companyname/dashboard')
@@ -66,6 +65,7 @@ function LoginForm() {
           ...values,
           pwdError: res?.errors.password,
           emailError: res?.errors.email,
+          accError: res?.errors.acc,
         })
       }
     }
@@ -73,11 +73,10 @@ function LoginForm() {
 
   const checkEmail = async (e) => {
     e.preventDefault()
-    // console.log('EMAIL CHECK')
+
     setValues({ ...values, emailError: '' })
     const res = await verify({ email })
     if (res) {
-      // console.log(res)
       if (res) {
         if (res.data) {
           setOperator({ operator: res.data, state: !operator.state })
@@ -96,18 +95,22 @@ function LoginForm() {
       password: '',
       emailError: '',
       pwdError: '',
+      accError: '',
     })
   }
 
   return (
     <div className='login-container'>
       <div
-        className={`loginContainer__right ${operator.state && 'op_active'} `}
+        className={`loginContainer__right ${
+          operator?.operator?.type === 'operator' && 'op_active'
+        } `}
       >
-        {operator.operator?.type != 'admin' && (
+        {operator.operator?.type !== 'admin' && (
           <div className='login__right'>
             <p>Enter Your Pin</p>
             <span className='error'>{pwdError}</span>
+            <span className='error'>{accError}</span>
             <div className='dots'>
               {[...Array(4)].map((value, index) => {
                 return (
@@ -189,7 +192,6 @@ function LoginForm() {
           </div>
         )}
       </div>
-
       <div className='login-forms'>
         <h3>Login</h3>
         <i className='fas fa-user-friends'></i>
@@ -231,13 +233,9 @@ function LoginForm() {
                   ></i>
                 )}
               </div>
-              <span className='error'>{error}</span>
+              <span className='error'>{pwdError}</span>
             </>
           )}
-
-          <span className='fg-pwd' onClick={() => navigate('/password-reset')}>
-            forgotten password
-          </span>
 
           <button
             className=' loginBtn'
@@ -249,19 +247,22 @@ function LoginForm() {
           </button>
           {/* end of login button */}
 
-          {pwdError && (
-            <div className='signup'>
-              Forgotten password
-              <button
-                className='Lgsignup'
-                onClick={(e) => {
-                  e.preventDefault()
-                }}
-              >
-                Reset
-              </button>
-            </div>
-          )}
+          <div className='signup'>
+            <span
+              className='fg-pwd'
+              onClick={() => navigate('/password-reset')}
+            >
+              forgotten password
+            </span>
+            <button
+              className='Lgsignup'
+              onClick={(e) => {
+                e.preventDefault()
+              }}
+            >
+              Reset
+            </button>
+          </div>
           {/* forgotten password change password. */}
 
           <div className='signup'>

@@ -157,9 +157,11 @@ function Addnewproduct() {
     const res = await allCategory(user?._id, user?.user)
 
     if (res) {
-      // console.log(res.data)
+      let val = res.data?.category[0]?._id
       if (res.data) {
         setCategories(res.data?.category)
+        //sets first category as default in our forms.
+        form.set('category', val)
       }
       //
     }
@@ -363,7 +365,7 @@ function Addnewproduct() {
             </div>
           </div>
         </div>
-        {/* {JSON.stringify(selectedfile)} */}
+        {/* {JSON.stringify(values)} */}
       </div>
 
       {/*  up product */}

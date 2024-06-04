@@ -3,7 +3,11 @@
 @tailwind utilities; */
 
 button {
-  @apply py-1 px-2 rounded bg-slate-50;
+  @apply py-1 px-4 rounded bg-slate-50;
+}
+
+.login-Btn a {
+  @apply text-lg;
 }
 
 .login-Btn {
@@ -12,6 +16,14 @@ button {
 
 .moreBtn {
   @apply block bg-slate-400 p-2 mt-4;
+}
+
+.grid__container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-gap: 2rem;
+  /* justify-items: center; */
+  /* align-content: center; */
 }
 
 header {
@@ -26,20 +38,20 @@ header .btns {
   @apply flex gap-4 ml-auto;
 }
 
-.jumbotron {
+/* .jumbotron {
   @apply bg-green-400;
-}
-.jumbotron main {
+} */
+/* .jumbotron main {
   @apply mt-8  grid md:grid-cols-2;
-}
+} */
 
-.jumbotron .left {
+/* .jumbotron .left {
   @apply p-8;
-}
+} */
 
-.jumbotron h4 {
+/* .jumbotron h4 {
   @apply bg-slate-100 opacity-40 p-4 border-4;
-}
+} */
 
 .jumbotron h1 {
   @apply text-6xl text-slate-500 uppercase font-semibold  my-4 md:text-4xl xl:text-7xl;
@@ -49,24 +61,35 @@ header .btns {
   @apply my-4;
 }
 
-.jumbotron .right {
+/* .jumbotron .right {
   @apply mt-4 md:mt-0;
+} */
+
+.feature__1 .top {
+  @apply mt-24 m-auto w-[25rem] text-center;
 }
 
 .feature__1 .top {
-  @apply mt-24 flex flex-col md:flex-row;
+  @apply mt-24;
 }
 
+.feature__1 .top h1 {
+  @apply leading-10;
+}
 .feature__1 .top p {
-  @apply text-2xl  font-semibold w-[30rem];
+  @apply font-semibold;
 }
 
-.feature__1 .top span {
+/* .feature__1 .top span {
   @apply text-lg w-[40rem] ml-auto;
-}
+} */
 
 .feature__1 .bottom {
-  @apply mt-8 flex flex-col gap-8 md:flex-row justify-between;
+  /* @apply grid grid-rows-1 */
+  /* @apply mt-8 flex flex-col gap-8 md:flex-row justify-between; */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 1.5rem;
 }
 
 .feature__1 .bottom .card {
@@ -93,10 +116,161 @@ header .btns {
   @apply text-lg;
 }
 
-.feature__3 {
+/* .feature__3 {
   @apply my-16 flex gap-16  flex-col md:flex-row justify-between;
+} */
+
+/* .feature__3 .left {
+  @apply bg-slate-50 shadow-md shadow-slate-500/30 rounded-md p-8;
+} */
+
+.latest__blog {
+  margin-top: 10rem;
+}
+.latest__blog .top {
+  @apply flex justify-between;
 }
 
-.feature__3 .left {
-  @apply bg-slate-50 shadow-md shadow-slate-500/30 rounded-md p-8;
+.latest__blog .top h1 {
+  @apply text-4xl font-bold;
+}
+
+/* .latest__blog .featured__blog .blog__card {
+  @apply rounded-md border-2 border-solid border-slate-300;
+} */
+
+.latest__blog .featured__blog {
+  @apply mt-8 rounded-md;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 4rem;
+}
+
+.latest__blog .blog__card .blog__img {
+  @apply mt-8 mb-4 rounded-lg;
+}
+
+.latest__blog .blog__card .bottom {
+  @apply mt-4 flex flex-row items-center gap-4;
+}
+
+.latest__blog .blog__card .bottom img {
+  @apply w-8 h-8 rounded-full object-cover;
+}
+.latest__blog .blog__card .bottom span {
+  @apply text-sm text-slate-500;
+}
+
+.testimony {
+  @apply mt-[10rem];
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 2rem;
+}
+
+.testimony .ratings {
+  @apply mt-4 text-yellow-600;
+}
+
+.testimony .left h1 {
+  @apply mt-2;
+}
+
+.testimony .left .info {
+  @apply mt-4;
+}
+.testimony .left .info span {
+  @apply text-sm text-slate-500;
+}
+
+.pricing {
+  @apply mt-[10rem];
+}
+
+.pricing .top {
+  @apply w-[25rem] mx-auto text-center;
+}
+
+.pricing .top h1 {
+  @apply text-3xl uppercase;
+}
+
+.pricing .pricing__cards .card {
+  @apply bg-white rounded-lg border-2 border-solid border-red-200;
+}
+.pricing .card .card__top {
+  @apply p-2;
+}
+
+.pricing .card .card__top .info {
+  @apply flex items-center justify-between;
+}
+
+.pricing .card .card__top .info .label {
+  @apply p-1 mt-4 rounded-3xl border-2 border-solid border-red-400 bg-slate-100 text-red-400 text-sm cursor-pointer hover:bg-slate-50;
+}
+
+.pricing .card__top .price span {
+  @apply font-bold text-4xl mt-4;
+}
+
+.pricing .card__top p {
+  @apply mt-2;
+}
+.pricing .card__top button {
+  @apply rounded-2xl bg-transparent border-2 border-solid border-slate-600 w-[100%] text-lg my-2 px-2 cursor-pointer;
+}
+
+.pricing .card .card__top button.active {
+  @apply bg-slate-600 text-white;
+}
+
+.pricing .card .features {
+  @apply p-2 border-t-2 border-solid border-slate-100;
+}
+
+.pricing .card .features .item {
+  @apply flex items-center gap-2 my-2;
+}
+
+@media (min-width: 640px) {
+  .testimony .left h1 {
+    @apply text-base;
+  }
+}
+
+@media (min-width: 768px) {
+  .testimony {
+    grid-gap: 1rem;
+  }
+
+  .testimony .left h1 {
+    @apply text-xl;
+  }
+
+  .container.pricing__cards {
+    max-width: 900px;
+  }
+
+  .pricing .top h1 {
+    @apply text-4xl;
+  }
+}
+
+@media (min-width: 1024px) {
+  .feature__1 .top {
+    @apply w-[40rem] text-3xl;
+  }
+
+  .testimony .left h1 {
+    @apply mt-8 text-4xl;
+  }
+
+  .testimony .left .info {
+    @apply mt-8;
+  }
+
+  .pricing .top h1 {
+    @apply text-5xl;
+  }
 }

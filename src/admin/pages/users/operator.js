@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import {
   createOperator,
   updateOperator,
-  getUsers,
+  getOperators,
   deleteUser,
   DeleteManyOps,
 } from '../../services/user'
@@ -14,11 +14,20 @@ import Toplayer from '../../../components/toplayer/toplayer'
 import Alert from '../../../components/messages/alert'
 
 function Operator() {
-  const { isAuthenticated } = useContext(Context)
+  const { isAuthenticated, appsettings } = useContext(Context)
   const [operators, setOperators] = useState([])
   const [operator, setOperator] = useState(null)
 
   const [rad, setRad] = useState([]) // helps in grouping array of selected operators
+
+  const [query, setQuery] = useState({
+    limit: appsettings?.usersPerpage,
+    skip: 0,
+  })
+
+  const [error, setError] = useState({ email: '', name: '', password: '' })
+
+  const [opslength, setopslength] = useState(null)
 
   const [hide, setHide] = useState({
     view: true,
@@ -31,15 +40,19 @@ function Operator() {
   const user = isAuthenticated('user')
 
   const getAllOp = async () => {
-    const res = await getUsers(user?._id, user?.user, {
+    const queryfilter = { ...query, permission: 'operator' }
+
+    const res = await getOperators(user?._id, user?.user, {
       permission: 'operator',
+      ...query,
     })
-    // console.log(res)
 
     if (res) {
-      // console.log(res.data)
       if (res.data) {
-        setOperators(res.data?.users)
+        const lent = res.data?.[0]?.pagination?.[0]?.total - 1
+        // setOperators(res.data?.users)
+        setOperators(res.data?.[0]?.totalData)
+        setopslength(lent)
       }
     }
   }
@@ -48,13 +61,14 @@ function Operator() {
     const res = await createOperator(user?._id, user?.user, values)
 
     if (res) {
-      console.log(res)
       if (res.data) {
         setHide({ ...hide, add: !hide.add })
         getAllOp()
+        clearErrors()
+      } else {
+        console.log(res.errors)
+        setError({ ...error, email: res.errors?.email })
       }
-    } else {
-      console.log(res)
     }
   }
   const upOp = async (values) => {
@@ -81,8 +95,6 @@ function Operator() {
         getAllOp()
         setOperator(null)
       }
-    } else {
-      console.log(res)
     }
   }
 
@@ -115,9 +127,53 @@ function Operator() {
     setHide({ ...hide, addalert: !hide.addalert })
   }
 
+  const pagesToshow = () => {
+    // checks items per page and divides the length of items by it
+    // e.g itesm = 10; items per page = 5; total paginate= 2
+    // show btns to more paginate if results from divide is greater
+    // than division.
+    var ppage = appsettings ? appsettings?.usersPerpage : 5
+    const res = Math.ceil(opslength / ppage)
+
+    return parseInt(res)
+  }
+
+  const defaultPagination = () => {
+    var ppage = appsettings?.usersPerpage
+    const res = Math.ceil(opslength / ppage)
+
+    let v = 0
+
+    if (res < appsettings?.usersPaginate) {
+      v = res
+    } else {
+      v = appsettings?.usersPaginate
+    }
+    return parseInt(v)
+  }
+
+  const checkifMorepages = () => {
+    // if more products than the pagination
+    // it shows more by clicking the next arrow
+
+    var ppage = appsettings?.usersPerpage
+    const res = Math.ceil(opslength / ppage)
+
+    if (defaultPagination() < res) {
+      return parseInt(res)
+    }
+  }
+
+  const clearErrors = () => {
+    setError({ name: '', email: '', password: '' })
+  }
+  useEffect(() => {
+    setQuery({ ...query, limit: appsettings?.usersPerpage })
+  }, [])
+
   useEffect(() => {
     getAllOp()
-  }, [])
+  }, [query])
 
   return (
     <div className='container operator__container'>
@@ -158,6 +214,8 @@ function Operator() {
         upOp={upOp}
         opera={operator}
         setOp={setOperator}
+        error={error}
+        clearError={clearErrors}
       />
 
       <Operatortable
@@ -168,6 +226,12 @@ function Operator() {
         setHide={setHide}
         rad={rad}
         setRad={setRad}
+        query={query}
+        setQuery={setQuery}
+        appsettings={appsettings}
+        opslength={pagesToshow}
+        showmore={checkifMorepages}
+        defaultPagination={defaultPagination}
       />
     </div>
   )

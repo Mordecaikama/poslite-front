@@ -44,6 +44,22 @@ export const getUsers = async (organiId, userId, filter) => {
   }
 }
 
+// for operator pagination
+export const getOperators = async (organiId, userId, filter) => {
+  // userinfo in an object e.g {username,password}
+
+  try {
+    const query = queryString.stringify(filter)
+    const data = await axios.get(`${API}/users/${organiId}/${userId}?${query}`)
+
+    if (data) {
+      return data.data
+    }
+  } catch (error) {
+    console.log('error ', error)
+  }
+}
+
 export const createOperator = async (organiId, userId, operator) => {
   // userinfo in an object e.g {username,password}
   const data = await axios.post(
@@ -59,6 +75,26 @@ export const createOperator = async (organiId, userId, operator) => {
 export const updateOperator = async (userId, organiId, operator) => {
   // userinfo in an object e.g {username,password}
   const data = await axios.put(`${API}/user/${userId}/${organiId}`, operator)
+
+  if (data) {
+    return data.data
+  }
+}
+
+export const confirmOperator = async (userId, organiId, operator) => {
+  // userinfo in an object e.g {username,password}
+  const data = await axios.post(
+    `${API}/confirmooperator/${userId}/${organiId}`,
+    operator
+  )
+
+  if (data) {
+    return data.data
+  }
+}
+export const checkOldPassword = async (userId, values) => {
+  // userinfo in an object e.g {username,password}
+  const data = await axios.post(`${API}/update/password/${userId}`, values)
 
   if (data) {
     return data.data
@@ -87,7 +123,27 @@ export const DeleteManyOps = async (organiId, userId, ops) => {
 }
 
 export const getOrganisation = async (userId, organiId) => {
-  const data = await axios.get(`${API}/organisation/${userId}/${organiId}}`)
+  const data = await axios.get(`${API}/organisation/${userId}/${organiId}`)
+  if (data) {
+    return data.data
+  }
+}
+
+export const updateOrganisation = async (userId, organiId, doc) => {
+  // userinfo in an object e.g {username,password}
+  const data = await axios.put(`${API}/organisation/${userId}/${organiId}`, doc)
+
+  if (data) {
+    return data.data
+  }
+}
+export const updateOrganiSettings = async (userId, organiId, doc) => {
+  // userinfo in an object e.g {username,password}
+  const data = await axios.put(
+    `${API}/organisation/settings/${userId}/${organiId}`,
+    doc
+  )
+
   if (data) {
     return data.data
   }

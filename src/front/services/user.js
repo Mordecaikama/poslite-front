@@ -17,9 +17,19 @@ export const Signup = async (user) => {
     return data.data
   }
 }
-export const verify = async (user) => {
+export const verify = async (values) => {
   // userinfo in an object e.g {username,password}
-  const data = await axios.post(`${API}/verify-email`, user)
+  const data = await axios.post(`${API}/verify-email`, values)
+  // console.log(data)
+
+  if (data) {
+    return data.data
+  }
+}
+
+export const verifyEmail = async (values) => {
+  // userinfo in an object e.g {username,password}
+  const data = await axios.post(`${API}/confirm-code`, values)
   // console.log(data)
 
   if (data) {

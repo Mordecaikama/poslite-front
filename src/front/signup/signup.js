@@ -77,17 +77,15 @@ function SignUpForm() {
     e.preventDefault()
     handleSignup()
 
-    console.log(values)
+    // console.log(values)
   }
 
   const handleSignup = async () => {
     const res = await Signup(values)
     if (res) {
       if (res.data) {
-        navigate('/signin')
+        navigate(`/confirm-email`)
         clearForms()
-      } else {
-        console.log(res)
       }
     }
   }

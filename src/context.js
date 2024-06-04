@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { updateOperator } from './admin/services/user'
 export const Context = React.createContext()
 
 function ContextProvider({ children }) {
@@ -12,6 +13,7 @@ function ContextProvider({ children }) {
   const [apptoken, setApptoken] = useState(null)
   const [receipt, setReceipt] = useState(false)
   const [tableoverview, setTableOverview] = useState(null)
+  const [appsettings, setAppsettings] = useState()
 
   const [menuShow, setMenuShow] = useState({
     dashboard: false,
@@ -21,11 +23,12 @@ function ContextProvider({ children }) {
 
   useEffect(() => {
     const user = isAuthenticated('user')
-    const { cart } = { ...localStorage }
-    let ct = cart ? JSON.parse(cart) : []
+    // const { cart } = { ...localStorage }
+    // let ct = cart ? JSON.parse(cart) : []
     setUser(user)
-    setCart(ct)
-  }, [])
+    // setCart(ct)
+    updateUserCart(cart) // when cart item changes reupdate the database with new cart
+  }, [cart])
 
   const isAuthenticated = (key) => {
     if (localStorage.getItem(key)) {
@@ -62,6 +65,15 @@ function ContextProvider({ children }) {
     }
   }
 
+  const updateUserCart = async (cart) => {
+    const res = await updateOperator(opTyp?._id, user?._id, {
+      cart,
+    })
+    if (res) {
+      totalItems(cart)
+    }
+  }
+
   function AddTolocalStorage(ct = cart, name = 'cart') {
     // localStorage.removeItem('cart')
     localStorage.setItem(name, JSON.stringify(ct))
@@ -72,7 +84,7 @@ function ContextProvider({ children }) {
     checkToAdd(item, itemcount)
   }
 
-  function checkToAdd(item, itemcount = 0) {
+  async function checkToAdd(item, itemcount = 0) {
     // this method checks to see if a product exist in the cart,
     // if it doesn't, it adds to cart, and
     // sets the totalItems(),overallPrice(), AddToloalStorage()
@@ -99,22 +111,22 @@ function ContextProvider({ children }) {
       setCart(endcartItems)
       totalItems(endcartItems)
       overAllPrice(endcartItems)
-      AddTolocalStorage(endcartItems)
+      // AddTolocalStorage(endcartItems)
     } else {
       const newproduct = [...cart, { ...item, count: 1 }]
       setCart(newproduct)
       setCartsize((prevsize) => prevsize + 1)
       totalItems(newproduct)
       overAllPrice(newproduct)
-      AddTolocalStorage(newproduct)
+      // AddTolocalStorage(newproduct)
       // AddTolocalStorage([...cart, { ...item, count: 1 }])
     }
   }
 
-  function emptycart(cb) {
+  function emptycart() {
     if (typeof window !== 'undefined') {
       const newcart = []
-      let keysToRemove = ['cart', 'shipmentdetails']
+      let keysToRemove = ['cart']
 
       for (let key of keysToRemove) {
         localStorage.removeItem(key)
@@ -126,7 +138,7 @@ function ContextProvider({ children }) {
     // get the empty cart and set it into our app.
   }
 
-  function removeCart(item) {
+  async function removeCart(item) {
     // setCart((prevItems) => prevItems.filter((prod) => prod.id !== item.id))
     const newcart = cart.filter((cartitem) => cartitem._id != item._id)
     setCart(newcart)
@@ -155,7 +167,18 @@ function ContextProvider({ children }) {
         return (prev += current.count * current.price)
       }, 0)
 
-    setCartTotalPrice(tot)
+    // rounds to two decimal before saving
+    var res = roundToTwo(tot)
+    setCartTotalPrice(res)
+  }
+
+  function overAllTax(total = cartTotalPrice) {
+    const res = appsettings?.tax * total
+    return roundToTwo(res)
+  }
+
+  function roundToTwo(num) {
+    return +(Math.round(num + 'e+2') + 'e-2')
   }
 
   const totalPrice = (items = cart) => {
@@ -166,19 +189,20 @@ function ContextProvider({ children }) {
         return (prev += current.count * current.price)
       }, 0)
 
-    return tot
+    return roundToTwo(tot)
   }
 
   return (
     <Context.Provider
       value={{
         cart,
+        setCart,
         cartsize,
         cartTotalPrice,
         menu,
         removeCart,
         emptycart,
-        totalItems,
+        // totalItems,
         addTocart,
         setMenu,
         isAuthenticated,
@@ -193,6 +217,9 @@ function ContextProvider({ children }) {
         receipt,
         tableoverview,
         setTableOverview,
+        appsettings,
+        setAppsettings,
+        overAllTax,
       }}
     >
       {children}

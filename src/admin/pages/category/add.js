@@ -30,17 +30,16 @@ function AddCategory({ addcat, upcat, cate, setCate, state, close }) {
   }, [cate])
 
   const handleChange = (name) => (event) => {
-    console.log(event.target)
     if (name === 'photo') {
       // sets image on frontend
       const file = event.target.files[0]
+      // console.log(file)
       const url = URL.createObjectURL(file)
       setSelectedCatfile(url)
-    } else {
-      const value = event.target.value
-      form.set(name, value)
-      setValues({ ...values, [name]: value })
     }
+    const val = name === 'photo' ? event.target.files[0] : event.target.value
+    form.set(name, val)
+    setValues({ ...values, [name]: val })
   }
 
   const addCate = (event) => {

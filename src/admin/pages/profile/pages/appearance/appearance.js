@@ -68,7 +68,7 @@ function Appearance() {
       <div className='login-forms settings__form appearance'>
         <div className='title'>
           <i className='fal fa-street-view'></i>
-          <h2>Organisation Logo </h2>
+          <h2>User Logo </h2>
         </div>
         <form onSubmit={handleSubmit}>
           <div className='profile-photo'>

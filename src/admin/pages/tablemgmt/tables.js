@@ -47,32 +47,31 @@ function Table() {
     getTableOverview()
   }, [filters])
 
-  useEffect(() => {
-    mouseEnterOut()
-  }, [])
+  // useEffect(() => {
+  //   mouseEnterOut()
+  // }, [])
 
-  const handleVert = (e) => {
-    // const res = vertRef.current?.some((items) => items['_id'] === tables?._id)
-    console.log(e.target, 'event')
-    const res =
-      vertRef.current &&
-      vertRef.current?.some((item) => !item?.current?.contains(e.target))
+  // const handleVert = (e) => {
 
-    if (toggle) {
-      if (res) {
-        setToggle(false)
-        setTable(null)
-      }
-    }
-  }
+  //   const res =
+  //     vertRef.current &&
+  //     vertRef.current?.some((item) => !item?.current?.contains(e.target))
 
-  const mouseEnterOut = () => {
-    document.addEventListener('mousedown', handleVert)
+  //   if (toggle) {
+  //     if (res) {
+  //       setToggle(false)
+  //       setTable(null)
+  //     }
+  //   }
+  // }
 
-    return () => {
-      document.removeEventListener('mousedown', handleVert)
-    }
-  }
+  // const mouseEnterOut = () => {
+  //   document.addEventListener('mousedown', handleVert)
+
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleVert)
+  //   }
+  // }
 
   const getAlltables = async () => {
     // console.log(filters)
@@ -120,7 +119,7 @@ function Table() {
 
   const handleTabUpdate = () => {
     // updates field
-    console.log('edit clicked and updated ')
+    // console.log('edit clicked and updated ')
     setHide({ ...hide, add: !hide.add })
     setToggle(!toggle)
   }
@@ -163,8 +162,6 @@ function Table() {
         getAlltables()
         getTableOverview()
       }
-    } else {
-      console.log(res)
     }
   }
 
@@ -284,7 +281,7 @@ function Table() {
                     className={`dropdown ${
                       table && table._id === tab._id && toggle && 'off'
                     }`}
-                    ref={(vertRef.current[ind] = React.createRef())}
+                    // ref={(vertRef.current[ind] = React.createRef())}
                     // onClick={handleVert}
                   >
                     <a onClick={handleTabUpdate}>
@@ -385,6 +382,7 @@ function Table() {
             yes={deltab}
             no={() => {
               setHide({ ...hide, delalert: !hide.delalert })
+              setTable(null)
             }}
             msg={`Delete Table ${table?.name} `}
           />

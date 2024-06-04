@@ -35,7 +35,7 @@ function Header() {
           <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
         </div>
         <span className='material-icons-sharp arrow-down'>expand_more</span>
-        <span>{opTyp?.name}</span>
+        <span>{opTyp?.name?.split(' ')[0]}</span>
 
         <div className='dropdown'></div>
       </div>

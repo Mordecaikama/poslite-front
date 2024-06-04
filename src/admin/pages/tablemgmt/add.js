@@ -12,8 +12,10 @@ function AddTable({
 }) {
   useEffect(() => {
     if (table) {
-      const [na, nu] = table.name
-      // console.log(n)
+      var nu = table.name.substring(table.name.length - 1) //get last digit
+      var na = table.name.slice(0, table.name.length - 1)
+      // const [na, nu] = table.name
+      // console.log(table)
       setValues({
         ...values,
         name: na,

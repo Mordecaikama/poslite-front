@@ -16,21 +16,28 @@ import SettingRoute from '../settings/settingsroute'
 import ProfileRoute from '../profile/profileroute'
 import Header from '../../header'
 import Timeline from '../reservation/timeline'
-import { userprofile } from '../../services/user'
+import { getOrganisation, userprofile } from '../../services/user'
 import { Context } from '../../../context'
 import { Tableoverview } from '../../services/table'
 
 function Homepage() {
-  const location = useLocation()
+  const { pathname } = useLocation()
 
-  const { isAuthenticated, opTyp, setOpTyp, setTableOverview } =
-    useContext(Context)
+  const {
+    isAuthenticated,
+    opTyp,
+    setOpTyp,
+    setTableOverview,
+    setAppsettings,
+    setCart,
+  } = useContext(Context)
 
   const user = isAuthenticated('user')
 
   useEffect(() => {
     getProfile()
     getTableOverview()
+    getSettings()
   }, [])
 
   const getProfile = async () => {
@@ -39,6 +46,7 @@ function Homepage() {
     if (res) {
       if (res.data) {
         setOpTyp(res.data?.data)
+        setCart(res.data?.data?.cart)
       }
     }
   }
@@ -54,12 +62,21 @@ function Homepage() {
       }
     }
   }
+
+  const getSettings = async () => {
+    const res = await getOrganisation(user?.user, user?._id)
+    if (res) {
+      if (res.data) {
+        setAppsettings(res.data?.config)
+      }
+    }
+  }
   return (
     <div className='main__container container'>
-      <Sidebar operator={opTyp} />
+      <Sidebar operator={opTyp} path={pathname} />
       <div className='main'>
-        {location?.pathname !== '/companyname/menu' &&
-          location?.pathname !== '/companyname/reservation' && <Header />}
+        {pathname !== '/companyname/menu' &&
+          pathname !== '/companyname/reservation' && <Header />}
 
         <Routes>
           {/* <Route exact path='/' element={<Index />} /> */}

@@ -2,21 +2,20 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import Notification from '../../../../../components/notification/notification'
 import { Context } from '../../../../../context'
+import { checkOldPassword } from '../../../../services/user'
 
 function Security() {
-  const { isAuthenticated } = useContext(Context)
+  const { isAuthenticated, opTyp } = useContext(Context)
   const [values, setValues] = useState({
     old: '',
     newpass: '',
     confirm: '',
     oldError: '',
-    email: '',
     newError: '',
     loading: false,
   })
 
   const user = isAuthenticated('user')
-  console.log(user)
 
   const [status, setStatus] = useState({
     old: false,
@@ -29,7 +28,7 @@ function Security() {
     error: false,
   })
 
-  const { old, newpass, confirm, email, newError, loading } = values
+  const { old, newpass, confirm, newError, loading } = values
 
   useEffect(() => {
     const timers = setTimeout(() => setNotification(false), 6000)
@@ -37,37 +36,43 @@ function Security() {
   }, [notification.success, notification.errors])
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value })
-  }
+    setValues({ ...values, pwdError: '', confirmError: '' })
+    const re = /^[0-9\b]+$/
+    const maxLength = 4
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // console.log(values)
-    if (newpass === confirm) {
-      console.log('newpassword passed')
-      // check the old password with the system
-      // checkOldpassword()
+    // if value is not blank, then test the regex
+    if (opTyp?.permission === 'operator') {
+      if (event.target.value === '' || re.test(event.target.value)) {
+        if (event.target.value.length < maxLength) {
+          setValues({ ...values, [name]: event.target.value })
+        } else {
+          setValues({ ...values, [name]: event.target.value })
+        }
+      }
     } else {
-      setValues({ ...values, newError: 'passwords do not match' })
-      setNotification({ ...notification, error: !notification.error })
+      setValues({ ...values, [name]: event.target.value })
     }
   }
 
-  // const checkOldpassword = async () => {
-  //   const res = await axios.post(`/api/update/password/${organi.user}`, {
-  //     password: values.old,
-  //     email,
-  //     newpass,
-  //   })
+  const handleSubmit = async (e) => {
+    e.preventDefault()
 
-  //   if (res.data.errors) {
-  //     setValues({ ...values, newError: 'Current password is Incorrect' })
-  //     setNotification({ ...notification, error: !notification.error })
-  //   } else {
-  //     setNotification({ ...notification, success: !notification.success })
-  //     setValues({ ...values, newError: res.data.data })
-  //   }
-  // }
+    if (newpass === confirm) {
+      const res = await checkOldPassword(user?.user, values)
+
+      if (res) {
+        if (res.data) {
+          setNotification({ ...notification, success: !notification.success })
+        } else {
+          setValues({ ...values, newError: res.errors?.password })
+          setNotification({ ...notification, error: !notification.error })
+        }
+      }
+    } else {
+      setValues({ ...values, newError: 'Passwords do not match' })
+      setNotification({ ...notification, error: !notification.error })
+    }
+  }
 
   const clear = () => {
     setValues({ ...values, newError: '', confirm: '', newpass: '' })
@@ -84,10 +89,17 @@ function Security() {
           <label htmlFor='title'>Current Password</label>
           <div className='login-password'>
             <input
-              type={status.old ? 'text' : 'password'}
+              type={`${status.old ? 'text' : 'password'}`}
               className='username'
               value={old}
-              placeholder='Current password'
+              placeholder={`${
+                opTyp && opTyp?.permission === 'operator'
+                  ? 'Current Pin'
+                  : 'Currrent Password'
+              }`}
+              maxLength={`${
+                opTyp && opTyp?.permission === 'operator' ? 4 : null
+              }`}
               required
               onChange={handleChange('old')}
               onFocus={() => clear()}
@@ -110,7 +122,14 @@ function Security() {
               type={status.news ? 'text' : 'password'}
               className='username'
               value={newpass}
-              placeholder='New passowrd'
+              placeholder={`${
+                opTyp && opTyp?.permission === 'operator'
+                  ? 'New Pin'
+                  : 'New Password'
+              }`}
+              maxLength={`${
+                opTyp && opTyp?.permission === 'operator' ? 4 : null
+              }`}
               required
               onChange={handleChange('newpass')}
             />
@@ -132,7 +151,14 @@ function Security() {
               type={status.confirm ? 'text' : 'password'}
               className='username'
               value={confirm}
-              placeholder='Confirm password'
+              placeholder={`${
+                opTyp && opTyp?.permission === 'operator'
+                  ? 'Confirm Pin'
+                  : 'Confirm Password'
+              }`}
+              maxLength={`${
+                opTyp && opTyp?.permission === 'operator' ? 4 : null
+              }`}
               required
               onChange={handleChange('confirm')}
             />
@@ -156,7 +182,7 @@ function Security() {
           <button className=' loginBtn'>Save</button>
         </form>
       </div>
-      {/* {JSON.stringify(values)} */}
+      {/* {JSON.stringify(opTyp)} */}
       <Notification
         msg='error'
         title='Error'
@@ -166,7 +192,7 @@ function Security() {
       <Notification
         msg='success'
         title='Success'
-        subtitle='Passwords updated successfully'
+        subtitle='Password Updated successfully'
         toggle={notification.success}
       />
     </div>

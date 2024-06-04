@@ -13,7 +13,7 @@ import Notification from '../../../components/notification/notification'
 import { allCategory } from '../../services/category'
 
 function Products() {
-  const { isAuthenticated } = useContext(Context)
+  const { isAuthenticated, appsettings } = useContext(Context)
   const [products, setProducts] = useState([])
   const [product, setProduct] = useState(null)
   // sets which notification
@@ -23,6 +23,11 @@ function Products() {
     del: true,
   })
 
+  const [query, setQuery] = useState({
+    limit: 0,
+    skip: 0,
+  })
+
   // sets which notification
   const [notification, setNotification] = useState({
     delproduct: false,
@@ -30,13 +35,19 @@ function Products() {
   })
   const [categories, setCategories] = useState([])
 
+  const [productslength, setProductslength] = useState(null)
+
   const [rad, setRad] = useState([]) // helps in grouping array of selected voters
 
   const user = isAuthenticated('user')
 
   useEffect(() => {
-    getAllproducts()
+    setQuery({ ...query, limit: appsettings?.productPerpage })
   }, [])
+
+  useEffect(() => {
+    getAllproducts()
+  }, [query])
 
   useEffect(() => {
     const timers = setTimeout(
@@ -51,12 +62,14 @@ function Products() {
   }, [notification.delproduct, notification.manydel]) //query
 
   const getAllproducts = async () => {
-    const res = await getProducts(user?._id)
+    // setQuery({ ...query, limit: appsettings?.productPerpage })
+
+    const res = await getProducts(user?._id, query)
 
     if (res) {
       if (res.data) {
-        // console.log(res.data)
-        setProducts(res.data?.products)
+        setProducts(res.data?.[0]?.totalData)
+        setProductslength(res.data?.[0]?.pagination?.[0]?.total)
         getCat()
       }
     }
@@ -97,6 +110,7 @@ function Products() {
     setHide({ ...hide, del: !hide.del })
   }
 
+  // pagination
   const deleteManyproducts = async () => {
     const res = await DeleteManyProducts(user?._id, user?.user, { data: rad })
 
@@ -108,6 +122,43 @@ function Products() {
       } else {
         console.log(res.error)
       }
+    }
+  }
+
+  const pagesToshow = () => {
+    // checks items per page and divides the length of items by it
+    // e.g itesm = 10; items per page = 5; total paginate= 2
+    // show btns to more paginate if results from divide is greater
+    // than division.
+    var ppage = appsettings ? appsettings?.productPerpage : 5
+    const res = Math.ceil(productslength / ppage)
+
+    return parseInt(res)
+  }
+
+  const defaultPagination = () => {
+    var ppage = appsettings ? appsettings?.productPerpage : 5
+    const res = Math.ceil(productslength / ppage)
+
+    let v = 0
+
+    if (res < appsettings?.productPaginate) {
+      v = res
+    } else {
+      v = appsettings?.productPaginate
+    }
+    return parseInt(v)
+  }
+
+  const checkifMorepages = () => {
+    // if more products than the pagination
+    // it shows more by clicking the next arrow
+
+    var ppage = appsettings ? appsettings?.productPerpage : 5
+    const res = Math.ceil(productslength / ppage)
+
+    if (defaultPagination() < res) {
+      return parseInt(res)
     }
   }
 
@@ -169,7 +220,14 @@ function Products() {
         setRad={setRad}
         setOneproduct={setOneproduct}
         categories={categories}
+        query={query}
+        setQuery={setQuery}
+        appsettings={appsettings}
+        productslength={pagesToshow}
+        showmore={checkifMorepages}
+        defaultPagination={defaultPagination}
       />
+      {/* {JSON.stringify(productslength)} */}
     </div>
   )
 }

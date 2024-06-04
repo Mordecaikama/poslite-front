@@ -13,7 +13,7 @@ import Alert from '../../../components/messages/alert'
 import Toplayer from '../../../components/toplayer/toplayer'
 
 function Category() {
-  const { isAuthenticated } = useContext(Context)
+  const { isAuthenticated, appsettings } = useContext(Context)
   const [value, setValues] = useState('')
   const [categories, setCategories] = useState([])
   const [category, setCategory] = useState(null)
@@ -27,11 +27,22 @@ function Category() {
     bulkalert: true,
   })
 
+  const [query, setQuery] = useState({
+    limit: 0,
+    skip: 0,
+  })
+
+  const [catlength, setCatlength] = useState(null)
+
   const [rad, setRad] = useState([]) // helps in grouping array of selected voters
 
   useEffect(() => {
-    getAllCate()
+    setQuery({ ...query, limit: appsettings?.catPerpage })
   }, [])
+
+  useEffect(() => {
+    getAllCate()
+  }, [query])
 
   const handleChange = (name) => (event) => {
     // updates field
@@ -56,12 +67,14 @@ function Category() {
   }
 
   const getAllCate = async () => {
-    const res = await allCategory(user?._id, user.user)
+    const res = await allCategory(user?._id, user.user, query)
 
     if (res) {
-      console.log(res.data)
       if (res.data) {
-        setCategories(res.data?.category)
+        // setCategories(res.data?.category)
+        // console.log(res.data)
+        setCategories(res.data?.[0]?.totalData)
+        setCatlength(res.data?.[0]?.pagination?.[0]?.total)
       }
     }
   }
@@ -118,6 +131,43 @@ function Category() {
     }
   }
 
+  const pagesToshow = () => {
+    // checks items per page and divides the length of items by it
+    // e.g itesm = 10; items per page = 5; total paginate= 2
+    // show btns to more paginate if results from divide is greater
+    // than division.
+    var ppage = appsettings ? appsettings?.catPerpage : 5
+    const res = Math.ceil(catlength / ppage)
+
+    return parseInt(res)
+  }
+
+  const defaultPagination = () => {
+    var ppage = appsettings ? appsettings?.catPerpage : 5
+    const res = Math.ceil(catlength / ppage)
+
+    let v = 0
+
+    if (res < appsettings?.catPaginate) {
+      v = res
+    } else {
+      v = appsettings?.catPaginate
+    }
+    return parseInt(v)
+  }
+
+  const checkifMorepages = () => {
+    // if more products than the pagination
+    // it shows more by clicking the next arrow
+
+    var ppage = appsettings?.catPerpage
+    const res = Math.ceil(catlength / ppage)
+
+    if (defaultPagination() < res) {
+      return parseInt(res)
+    }
+  }
+
   return (
     <div className='container category__container'>
       <h1>category </h1>
@@ -167,7 +217,15 @@ function Category() {
         setHide={setHide}
         rad={rad}
         setRad={setRad}
+        query={query}
+        setQuery={setQuery}
+        appsettings={appsettings}
+        pages={pagesToshow}
+        showmore={checkifMorepages}
+        defaultPagination={defaultPagination}
       />
+      {/* {JSON.stringify(pagesToshow())} */}
+      {/* {2} */}
     </div>
   )
 }

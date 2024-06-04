@@ -10,6 +10,8 @@ import AdminDashboard from './admin/admindashboard'
 import AdminRoute from './components/auth/adminRoute'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import VerifyCode from './front/verifycode/verifycode'
+import VerifyOperator from './front/operator/verifyop'
 
 function App() {
   return (
@@ -18,6 +20,12 @@ function App() {
         <Route exact path='/' element={<Index />} />
         <Route exact path='/signin' element={<LoginForm />} />
         <Route exact path='/signup' element={<SignUpForm />} />
+        <Route exact path='/confirm-email' element={<VerifyCode />} />
+        <Route
+          exact
+          path='/confirmOperator/:orgId/:usId'
+          element={<VerifyOperator />}
+        />
 
         <Route
           exact

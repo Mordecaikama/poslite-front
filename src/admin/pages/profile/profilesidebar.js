@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { Context } from '../../../context'
+import { useContext } from 'react'
 
 function ProfileSidebar({ path }) {
+  const { opTyp } = useContext(Context)
   return (
     <div className='profile__navbar'>
       <nav>
@@ -11,6 +14,16 @@ function ProfileSidebar({ path }) {
           <span className='material-icons-sharp'>date_range</span>
           <h3>Profile</h3>
         </Link>
+        {opTyp?.permission === 'admin' && (
+          <Link
+            to='/companyname/profile/company'
+            className={`${path === '/companyname/profile/company' && 'active'}`}
+          >
+            <span className='material-icons-sharp'>date_range</span>
+            <h3>Company</h3>
+          </Link>
+        )}
+        {}
         <Link
           to='/companyname/profile/appearance'
           className={`${

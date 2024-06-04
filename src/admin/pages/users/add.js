@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react'
 
 import { FILE } from '../../../config'
 
-function AddOperator({ addOp, upOp, opera, setOp, state, close }) {
+function AddOperator({
+  addOp,
+  upOp,
+  opera,
+  setOp,
+  state,
+  close,
+  error,
+  clearError,
+}) {
   const [values, setValues] = useState({
     name: '',
     photo: '',
@@ -88,6 +97,7 @@ function AddOperator({ addOp, upOp, opera, setOp, state, close }) {
     close()
     clearForms()
     setOp(null)
+    clearError()
   }
 
   return (
@@ -167,6 +177,7 @@ function AddOperator({ addOp, upOp, opera, setOp, state, close }) {
               onChange={handleChange('name')}
             />
           </div>
+          <p className='error'>{error.name}</p>
           <label>Email</label>
           <div className='login-password'>
             <input
@@ -178,6 +189,7 @@ function AddOperator({ addOp, upOp, opera, setOp, state, close }) {
               onChange={handleChange('email')}
             />
           </div>
+          <p className='error'>{error.email}</p>
           <label>password</label>
           <div className='login-password'>
             <input
@@ -192,6 +204,7 @@ function AddOperator({ addOp, upOp, opera, setOp, state, close }) {
               // onKeyDown={removechange}
             />
           </div>
+          <p className='error'>{error.password}</p>
 
           <button className='loginBtn'>
             {opera ? 'Update' : 'Add'} Operator

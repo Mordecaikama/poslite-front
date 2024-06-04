@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { getProducts } from '../../services/menu'
-import { allCategory, getCategoryProducts } from '../../services/category'
+import { allCat, getCategoryProducts } from '../../services/category'
 import { Context } from '../../../context'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createOrder } from '../../services/order'
@@ -13,7 +13,7 @@ import Receipt from '../receipt'
 import Card from '../../../components/cards/catcard'
 import Foodcard from '../../../components/cards/foodcard'
 import Notification from '../../../components/notification/notification'
-import { FILE } from '../../../config'
+import { FILE, responsive } from '../../../config'
 
 function Menu() {
   const {
@@ -29,6 +29,8 @@ function Menu() {
     opTyp,
     receipt,
     setReceipt,
+    appsettings,
+    overAllTax,
   } = useContext(Context)
 
   // const [receipt, setReceipt] = useState(false)
@@ -57,7 +59,10 @@ function Menu() {
     cash: false,
     card: false,
     ewallet: false,
+    payerror: 'error',
   })
+
+  const { payerror } = options
 
   const [pin, setPin] = useState('')
 
@@ -119,7 +124,7 @@ function Menu() {
     const res = await getProducts(organi?._id)
 
     if (res) {
-      // console.log(res.data?.products)
+      console.log(res.data?.products)
       setProducts(res.data?.products)
     } else {
       console.log(res)
@@ -138,14 +143,12 @@ function Menu() {
   }
 
   const getCategories = async () => {
-    const res = await allCategory(organi?._id, organi?.user)
+    const res = await allCat(organi?._id, organi?.user)
 
     if (res) {
       // console.log(res.data)
       if (res.data) {
         setValues({ ...values, categories: res.data?.category, loading: true })
-      } else {
-        console.log(res)
       }
       //
     }
@@ -159,29 +162,32 @@ function Menu() {
       customer: location.state ? location?.state?.data.customer : 'default',
       amount: tot,
       operator: organi.user,
-      table,
+      table: table?.name,
       orderstatus: 'checkedIn',
     }
 
-    const res = await createOrder(organi?._id, organi?.user, orders)
+    if (parseInt(pin) >= tot) {
+      const res = await createOrder(organi?._id, organi?.user, orders)
 
-    if (res) {
-      if (res.data) {
-        emptycart()
-        getAlltables()
-        // only works if it was reroute from reservation page
-        if (location.state) {
-          navigate(location.pathname, {})
-          setTable('')
+      if (res) {
+        if (res.data) {
+          emptycart()
+          getAlltables()
+          // only works if it was reroute from reservation page
+          if (location.state) {
+            navigate(location.pathname, {})
+            setTable('')
+          }
+        } else {
+          setOptions({ ...options, cash: !options.cash })
+          setOrderinfo('Please Select table')
+          setNotification({
+            ...notification,
+            taberror: !notification.taberror,
+          })
         }
-      } else {
-        setOptions({ ...options, cash: !options.cash })
-        setOrderinfo('Please Select table')
-        setNotification({
-          ...notification,
-          taberror: !notification.taberror,
-        })
       }
+    } else {
     }
   }
 
@@ -193,7 +199,11 @@ function Menu() {
     if (res) {
       // console.log(res.data[0]?.tables)
       if (res?.data) {
-        setTables(res.data[0]?.tables)
+        let tb = res.data[0]?.tables
+        // assigns only free tables
+        let free_tb = tb?.filter((table) => table.status === 'free')
+        setTables(free_tb)
+        setTable(free_tb && free_tb[0])
       }
 
       //  setOrders(res.data[0]?.orders)
@@ -219,24 +229,14 @@ function Menu() {
             onChange={handleTableChange('table')}
           >
             {tables &&
-              tables
-                ?.filter((table) => table.status === 'free')
-                .map((table, i) => (
-                  <option key={i} value={table?.name}>
-                    {table.name}
-                  </option>
-                ))}
+              tables?.map((table, i) => (
+                <option key={i} value={table?.name}>
+                  {table.name}
+                </option>
+              ))}
           </select>
         </div>
       )
-    }
-  }
-
-  const mouseEnterOut = () => {
-    document.addEventListener('mousedown', handleClick)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClick)
     }
   }
 
@@ -304,18 +304,18 @@ function Menu() {
               <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
             </div>
             <span className='material-icons-sharp arrow-down'>expand_more</span>
-            <span>{opTyp?.name}</span>
+            <span>{opTyp?.name?.split(' ')[0]}</span>
 
             <div className='dropdown'></div>
           </div>
         </div>
-
         <div className='menu__category item'>
           <Carousel
             products={eCate}
             slidesToShow={
               values?.categories?.length > 4 ? 4 : values?.categories?.length
             }
+            responsive={responsive}
           />
           {!values.loading
             ? 'loading'
@@ -323,7 +323,6 @@ function Menu() {
 
           {/* <MultiCaros /> */}
         </div>
-
         <div
           className={`food__container ${
             values.catProd.length < 1 && 'no__item'
@@ -352,12 +351,15 @@ function Menu() {
             })
           )}
         </div>
+        {/* {JSON.stringify(opTyp)} */}
 
-        <div className='menu__footer item'>
-          <Table name='T5' items='5' />
-          <Table name='T6' items='8' status='finished' />
-          <Table name='T4' items='3' status='paid' />
-        </div>
+        {appsettings?.menufooter && (
+          <div className='menu__footer item'>
+            <Table name='T5' items='5' />
+            <Table name='T6' items='8' status='finished' />
+            <Table name='T4' items='3' status='paid' />
+          </div>
+        )}
       </div>
 
       <Receipt
@@ -367,7 +369,10 @@ function Menu() {
         showStatus={showStatus}
         handleClick={handleClick} // sets cart item
         hide={hide}
+        appsettings={appsettings}
         removeCart={handleCartDelete}
+        total={totalPrice}
+        tax={overAllTax}
       />
 
       <div className={`receipt__mobile ${receipt && 'showreceipt'}`}>
@@ -421,18 +426,18 @@ function Menu() {
           <div className='receipt__total'>
             <div className='subtotal'>
               <span>subtotal</span>
-              <span>$171.50</span>
+              <span>$ {totalPrice()}</span>
             </div>
             <div className='tax'>
-              <span>Tax 10%</span>
-              <span>$75.50</span>
+              <span>Tax {appsettings?.tax * 100}%</span>
+              <span>$ {overAllTax()}</span>
             </div>
 
             <hr className='dashed' />
 
             <div className='Total'>
               <span>Total</span>
-              <span>$ 188.50</span>
+              <span>$ {(totalPrice() + overAllTax()).toFixed(2)}</span>
             </div>
 
             <div className='receipt__footer'>
@@ -449,17 +454,19 @@ function Menu() {
                     </span>
                     <p>Cash</p>
                   </div>
-                  <div className='cash'>
-                    <span
-                      className='material-icons-sharp pay'
-                      onClick={() =>
-                        setOptions({ ...options, card: !options.card })
-                      }
-                    >
-                      credit_score
-                    </span>
-                    <p>Debit Card</p>
-                  </div>
+                  {appsettings && appsettings?.debitSidebar && (
+                    <div className='cash'>
+                      <span
+                        className='material-icons-sharp pay'
+                        onClick={() =>
+                          setOptions({ ...options, card: !options.card })
+                        }
+                      >
+                        credit_score
+                      </span>
+                      <p>Debit Card</p>
+                    </div>
+                  )}
                   <div className='cash'>
                     <span className='material-icons-sharp pay'>dashboard</span>
                     <p>E-Wallet</p>
@@ -489,10 +496,13 @@ function Menu() {
           <input
             type='number'
             className='username'
+            value={pin}
             required
             onChange={() => {}}
           />
         </div>
+
+        <label htmlFor=''>{payerror}</label>
 
         <div className='pin__numbers'>
           <button className='pin__number' onClick={() => handleChange('1')}>

@@ -11,17 +11,28 @@ import Toplayer from '../../../components/toplayer/toplayer'
 import Alert from '../../../components/messages/alert'
 import Notification from '../../../components/notification/notification'
 import Vieworder from './order'
+import DateFilter from '../../../components/datefilter/datefilter'
+
+import DatePicker, { DateObject } from 'react-multi-date-picker'
+import { getUsers } from '../../services/user'
 
 const Orders = () => {
-  const { menu, setMenu, isAuthenticated } = useContext(Context)
+  const { appsettings, isAuthenticated, opTyp } = useContext(Context)
   const [orders, setOrders] = useState(null)
   const [order, setOrder] = useState(null)
   const [Filters, setFilters] = useState({
-    date: new Date().toISOString().split('T')[0],
+    dates: [],
     operator: null,
     limit: 10,
     createdAt: 'asc',
   })
+  const [dt, setdt] = useState([
+    new DateObject().subtract(1, 'days'),
+    new Date(),
+  ])
+
+  const [operators, setOperators] = useState([])
+  const [operator, setOperator] = useState({ name: 'All' })
 
   const [hide, setHide] = useState({
     tview: true, //table order view status
@@ -31,11 +42,21 @@ const Orders = () => {
     bulkalert: true,
   })
 
+  const [dateObj, setdateObj] = useState(['days', 'months', 'year'])
+
+  const [currentdate, setCurrentdate] = useState('days')
   // sets which notification
   const [notification, setNotification] = useState({
     delorder: false,
     manydelorders: false,
     orderstate: false,
+  })
+
+  const [ordlength, setOrdlength] = useState(null)
+
+  const [query, setQuery] = useState({
+    limit: 0,
+    skip: 0,
   })
 
   const [view, setView] = useState('table')
@@ -44,8 +65,6 @@ const Orders = () => {
 
   //for orders
   const [statusvalues, setStatusvalues] = useState([])
-
-  const { date } = Filters
 
   const AddRemoveProduct = (order) => (e) => {
     e.stopPropagation()
@@ -63,9 +82,14 @@ const Orders = () => {
   const user = isAuthenticated('user')
 
   useEffect(() => {
+    setQuery({ ...query, limit: appsettings?.ordersPerpage })
+  }, [])
+
+  useEffect(() => {
     getAllorders()
     loadStatusValues()
-  }, [Filters])
+    getAllOp()
+  }, [dt, operator, query])
 
   useEffect(() => {
     const timers = setTimeout(
@@ -99,6 +123,7 @@ const Orders = () => {
   const handleChange = (name) => (event) => {
     setFilters({ ...Filters, [name]: event.target.value })
   }
+
   const handleView = (name) => (event) => {
     setView(event.target.value)
   }
@@ -112,6 +137,7 @@ const Orders = () => {
       manydelorders: !notification.manydelorders,
     })
   }
+
   const delOrd = async () => {
     setHide({ ...hide, delalert: !hide.delalert })
     setNotification({
@@ -119,12 +145,22 @@ const Orders = () => {
       delorder: !notification.delorder,
     })
   }
+
   const getAllorders = async () => {
-    console.log(Filters)
+    // checks to see if operator is admin and all is selected then it selects all else if operator is 'operator'
+    // then selects current operator id else selected operator from dropdown
     let filters = {
       ...Filters,
-      operator: user.user,
-      date: Filters.date,
+      // default is all n no option to reselect so it defaults to current operator
+      operator:
+        opTyp?.permission === 'admin' && operator?.name === 'All'
+          ? {}
+          : opTyp?.permission === 'operator'
+          ? opTyp?._id
+          : operator?._id,
+      dates: dt,
+      limit: query.limit,
+      skip: query.skip,
     }
     const res = await listOrders(user?._id, user?.user, filters)
     // console.log(res)
@@ -132,10 +168,9 @@ const Orders = () => {
     if (res) {
       // console.log(res.data[0]?.orders)
       if (res.data) {
-        setOrders(res.data[0]?.orders)
+        setOrders(res.data?.[0]?.totalData)
+        setOrdlength(res.data?.[0]?.pagination?.[0]?.total)
       }
-    } else {
-      console.log(res)
     }
   }
 
@@ -192,6 +227,94 @@ const Orders = () => {
         )}
       </div>
     )
+  }
+
+  const handleDateClick = (item) => {
+    setCurrentdate(currentdate !== item ? item : null)
+  }
+
+  const handleOpChange = (value) => (event) => {
+    // adds the pin numbers in a string format
+    // console.log(value)
+    const res = operators.filter((op) => op?.name === event.target.value)
+
+    setOperator(res && res[0])
+  }
+
+  //function
+  const getAllOp = async () => {
+    const res = await getUsers(user?._id, user?.user, {
+      permission: 'operator',
+    })
+    // console.log(res)
+
+    if (res) {
+      // console.log(res.data)
+      if (res.data) {
+        res.data?.users.push({ name: 'All' })
+        setOperators(res.data?.users)
+      }
+    }
+  }
+
+  const OperatorsComponent = () => {
+    return (
+      <div className='login-password'>
+        {opTyp?.permission === 'operator' ? (
+          <span>{opTyp?.name}</span>
+        ) : (
+          <select
+            className='search-select status-select '
+            value={operator?.name}
+            onChange={handleOpChange('operator')}
+          >
+            {operators &&
+              operators?.map((op, i) => (
+                <option key={i} value={op?.name}>
+                  {op.name}
+                </option>
+              ))}
+          </select>
+        )}
+      </div>
+    )
+  }
+
+  const pagesToshow = () => {
+    // checks items per page and divides the length of items by it
+    // e.g itesm = 10; items per page = 5; total paginate= 2
+    // show btns to more paginate if results from divide is greater
+    // than division.
+    var ppage = appsettings ? appsettings?.ordersPerpage : 5
+    const res = Math.ceil(ordlength / ppage)
+
+    return parseInt(res)
+  }
+
+  const defaultPagination = () => {
+    var ppage = appsettings ? appsettings?.ordersPerpage : 5
+    const res = Math.ceil(ordlength / ppage)
+
+    let v = 0
+
+    if (res < appsettings?.ordPaginate) {
+      v = res
+    } else {
+      v = appsettings?.ordersPaginate
+    }
+    return parseInt(v)
+  }
+
+  const checkifMorepages = () => {
+    // if more products than the pagination
+    // it shows more by clicking the next arrow
+
+    var ppage = appsettings?.ordersPerpage
+    const res = Math.ceil(ordlength / ppage)
+
+    if (defaultPagination() < res) {
+      return parseInt(res)
+    }
   }
 
   return (
@@ -253,16 +376,21 @@ const Orders = () => {
       />
 
       <div className='order__info'>
-        <h4>Orders</h4>
-
+        {/* <h4>Orders</h4> */}
         <div className='login-password'>
           <select value={view} onChange={handleView('view')}>
-            {/* <option value={gender}>{gender}</option> */}
             <option value='table'>Table</option>
             <option value='hcard'>hall Card</option>
           </select>
         </div>
-        <input type='date' className='date' onChange={handleChange('date')} />
+        <DateFilter
+          items={dateObj}
+          handleDateClick={handleDateClick}
+          currentdate={currentdate}
+          dt={dt}
+          setdt={setdt}
+        />
+        {OperatorsComponent()}
       </div>
 
       <div className='title'>
@@ -294,6 +422,12 @@ const Orders = () => {
           handleOrddel={handleOrddel}
           hide={hide}
           setHide={setHide}
+          query={query}
+          setQuery={setQuery}
+          appsettings={appsettings}
+          pages={pagesToshow}
+          showmore={checkifMorepages}
+          defaultPagination={defaultPagination}
         />
       ) : (
         <Orderhall
@@ -306,8 +440,7 @@ const Orders = () => {
         />
       )}
 
-      {}
-      {/* {JSON.stringify(orders)} */}
+      <p>{checkifMorepages()}</p>
     </div>
   )
 }

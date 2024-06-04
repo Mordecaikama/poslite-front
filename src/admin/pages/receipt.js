@@ -8,6 +8,9 @@ function Receipt({
   showStatus,
   hide,
   handleClick, // sets cart item
+  appsettings,
+  total,
+  tax,
 }) {
   const { cart } = useContext(Context)
 
@@ -75,18 +78,18 @@ function Receipt({
         <div className='receipt__total'>
           <div className='subtotal'>
             <span>subtotal</span>
-            <span>$171.50</span>
+            <span>$ {total()}</span>
           </div>
           <div className='tax'>
-            <span>Tax 10%</span>
-            <span>$75.50</span>
+            <span>Tax {appsettings?.tax * 100}%</span>
+            <span>$ {tax()}</span>
           </div>
 
           <hr className='dashed' />
 
           <div className='Total'>
             <span>Total</span>
-            <span>$ 188.50</span>
+            <span>$ {(total() + tax()).toFixed(2)}</span>
           </div>
 
           <div className='receipt__footer'>
@@ -103,17 +106,19 @@ function Receipt({
                   </span>
                   <p>Cash</p>
                 </div>
-                <div className='cash'>
-                  <span
-                    className='material-icons-sharp pay'
-                    onClick={() =>
-                      setOptions({ ...options, card: !options.card })
-                    }
-                  >
-                    credit_score
-                  </span>
-                  <p>Debit Card</p>
-                </div>
+                {appsettings && appsettings?.debitSidebar && (
+                  <div className='cash'>
+                    <span
+                      className='material-icons-sharp pay'
+                      onClick={() =>
+                        setOptions({ ...options, card: !options.card })
+                      }
+                    >
+                      credit_score
+                    </span>
+                    <p>Debit Card</p>
+                  </div>
+                )}
                 <div className='cash'>
                   <span className='material-icons-sharp pay'>dashboard</span>
                   <p>E-Wallet</p>
