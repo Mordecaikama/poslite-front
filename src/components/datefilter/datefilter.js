@@ -13,7 +13,7 @@ function DateFilter({ items, handleDateClick, currentdate, dt, setdt }) {
           range={true}
           onChange={setdt}
           // onMonthChange={setdt}
-          format='DD MMM YYYY HH:mm:ss'
+          // format='DD MMM YYYY HH:mm:ss'
           dateSeparator=' - '
           onlyMonthPicker={currentdate === 'months' ? true : false}
           onlyYearPicker={currentdate === 'year' ? true : false}
@@ -26,15 +26,11 @@ function DateFilter({ items, handleDateClick, currentdate, dt, setdt }) {
 
       <div className='date__dropdown'>
         <div className='date__top'>
-          <div className='button'>
-            <span>Previous</span>
-            <span className='material-icons-sharp'>keyboard_arrow_down</span>
-          </div>
           <div className='login-password'>
-            <input type='number' placeholder='30' value={30} />
+            <input type='text' placeholder='30' value='select' disabled />
           </div>
           <div className='button days'>
-            <span>Previous</span>
+            <span>{currentdate}</span>
             <span className='material-icons-sharp'>keyboard_arrow_down</span>
             <div className='item__dropdown'>
               {items?.map((item, ind) => {

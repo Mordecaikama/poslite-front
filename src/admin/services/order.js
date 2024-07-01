@@ -65,3 +65,13 @@ export const deleteOrder = async (orderId, userId) => {
     return data.data
   }
 }
+
+export const DeleteManyOrders = async (organiId, userId, orders) => {
+  const data = await axios.delete(
+    `${API}/orders/bulk/${organiId}/${userId}`,
+    orders
+  )
+  if (data) {
+    return data.data
+  }
+}

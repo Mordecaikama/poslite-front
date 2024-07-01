@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 
 function Operatortable({
   operators,
@@ -154,7 +154,7 @@ function Operatortable({
                       </td>
                       <td className='table-img'>
                         <img
-                          src={`${FILE}/images/${operator?.img}`}
+                          src={`${S3PATH}/${operator?.img}`}
                           alt={operator?.name}
                         />
                       </td>
@@ -213,7 +213,6 @@ function Operatortable({
             <span className='material-icons-sharp kl'>keyboard_arrow_left</span>
           </button>
         )}
-        {/* slice(start, end). */}
         {[...Array(opslength()).keys()].slice(start, end).map((it, ind) => {
           const numba = it + 1
           return (

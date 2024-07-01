@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Context } from '../context'
-import { FILE } from '../config'
+import { S3PATH } from '../config'
 
 function Header() {
   const { cartsize, menu, setMenu, receipt, setReceipt, opTyp } =
@@ -32,9 +32,8 @@ function Header() {
 
       <div className='profile'>
         <div className='profile-photo'>
-          <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
+          <img src={`${S3PATH}/${opTyp?.img}`} alt='' />
         </div>
-        <span className='material-icons-sharp arrow-down'>expand_more</span>
         <span>{opTyp?.name?.split(' ')[0]}</span>
 
         <div className='dropdown'></div>

@@ -4,6 +4,8 @@ import {
   listOrders,
   updateOrderStatus,
   getOrderStatusValues,
+  deleteOrder,
+  DeleteManyOrders,
 } from '../../services/order'
 import Orderhall from './orderhall'
 import OrderTable from './ordertable'
@@ -13,7 +15,6 @@ import Notification from '../../../components/notification/notification'
 import Vieworder from './order'
 import DateFilter from '../../../components/datefilter/datefilter'
 
-import DatePicker, { DateObject } from 'react-multi-date-picker'
 import { getUsers } from '../../services/user'
 
 const Orders = () => {
@@ -24,11 +25,11 @@ const Orders = () => {
     dates: [],
     operator: null,
     limit: 10,
-    createdAt: 'asc',
+    createdAt: 'desc',
   })
   const [dt, setdt] = useState([
-    new DateObject().subtract(1, 'days'),
-    new Date(),
+    // new DateObject().subtract(1, 'days'),
+    new Date().toISOString().slice(0, 10),
   ])
 
   const [operators, setOperators] = useState([])
@@ -52,7 +53,7 @@ const Orders = () => {
     orderstate: false,
   })
 
-  const [ordlength, setOrdlength] = useState(null)
+  const [ordlength, setOrdlength] = useState([])
 
   const [query, setQuery] = useState({
     limit: 0,
@@ -116,6 +117,7 @@ const Orders = () => {
   }
   const handleOrddel = (oder) => {
     // updates field
+    console.log(oder)
     setOrder(oder)
     setHide({ ...hide, delalert: !hide.delalert })
   }
@@ -131,24 +133,39 @@ const Orders = () => {
   const delBulk = async () => {
     // console.log(rad)
 
-    setHide({ ...hide, bulkalert: !hide.bulkalert })
-    setNotification({
-      ...notification,
-      manydelorders: !notification.manydelorders,
-    })
+    const res = await DeleteManyOrders(user?._id, user?.user, { data: rad })
+
+    if (res) {
+      if (res.data) {
+        setHide({ ...hide, bulkalert: !hide.bulkalert })
+        getAllorders()
+        setNotification({
+          ...notification,
+          manydelorders: !notification.manydelorders,
+        })
+      }
+    }
   }
 
   const delOrd = async () => {
-    setHide({ ...hide, delalert: !hide.delalert })
-    setNotification({
-      ...notification,
-      delorder: !notification.delorder,
-    })
+    const res = await deleteOrder(order?._id, user?.user)
+
+    if (res) {
+      if (res.data) {
+        setHide({ ...hide, delalert: !hide.delalert })
+        getAllorders()
+        setNotification({
+          ...notification,
+          delorder: !notification.delorder,
+        })
+      }
+    }
   }
 
   const getAllorders = async () => {
     // checks to see if operator is admin and all is selected then it selects all else if operator is 'operator'
     // then selects current operator id else selected operator from dropdown
+    // console.log(dt)
     let filters = {
       ...Filters,
       // default is all n no option to reselect so it defaults to current operator
@@ -166,10 +183,13 @@ const Orders = () => {
     // console.log(res)
 
     if (res) {
-      // console.log(res.data[0]?.orders)
       if (res.data) {
         setOrders(res.data?.[0]?.totalData)
-        setOrdlength(res.data?.[0]?.pagination?.[0]?.total)
+        setOrdlength(
+          res.data?.[0]?.pagination?.[0]?.total
+            ? res.data?.[0]?.pagination?.[0]?.total
+            : 0
+        )
       }
     }
   }
@@ -364,7 +384,7 @@ const Orders = () => {
             no={() => {
               setHide({ ...hide, delalert: !hide.delalert })
             }}
-            msg={`Delete ${order?._id} `}
+            msg={`Delete ${order?._id.slice(0, 5)} `}
           />
         }
       />
@@ -425,6 +445,7 @@ const Orders = () => {
           query={query}
           setQuery={setQuery}
           appsettings={appsettings}
+          ordlength={ordlength}
           pages={pagesToshow}
           showmore={checkifMorepages}
           defaultPagination={defaultPagination}
@@ -439,8 +460,6 @@ const Orders = () => {
           handleOrddel={handleOrddel}
         />
       )}
-
-      <p>{checkifMorepages()}</p>
     </div>
   )
 }

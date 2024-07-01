@@ -5,7 +5,6 @@ import { Context } from '../../../context'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createOrder } from '../../services/order'
 import { listtable } from '../../services/table'
-import Carousel from '../../../components/Carousel/Carousel'
 
 import Table from '../../../components/tables'
 import Receipt from '../receipt'
@@ -13,7 +12,13 @@ import Receipt from '../receipt'
 import Card from '../../../components/cards/catcard'
 import Foodcard from '../../../components/cards/foodcard'
 import Notification from '../../../components/notification/notification'
-import { FILE, responsive } from '../../../config'
+import { S3PATH } from '../../../config'
+import Emblamenu from '../../../components/Carouse/Emblamenu'
+
+// const OPTIONS = { loop: true }
+const OPTIONS = { dragFree: true }
+const SLIDE_COUNT = 16
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
 function Menu() {
   const {
@@ -59,7 +64,7 @@ function Menu() {
     cash: false,
     card: false,
     ewallet: false,
-    payerror: 'error',
+    payerror: '',
   })
 
   const { payerror } = options
@@ -73,7 +78,7 @@ function Menu() {
 
   const handleChange = (value) => {
     // adds the pin numbers in a string format
-    if (pin.length < 4) {
+    if (pin.length < 6) {
       let pinNumber = pin + value
       setPin(pinNumber)
     }
@@ -148,18 +153,22 @@ function Menu() {
   }
 
   const addOrder = async () => {
-    const tot = totalPrice()
-    const orders = {
-      products: cart,
-      transaction_id: 'abcde',
-      customer: location.state ? location?.state?.data.customer : 'default',
-      amount: tot,
-      operator: organi.user,
-      table: table?.name,
-      orderstatus: 'checkedIn',
-    }
+    const tot = (totalPrice() + overAllTax()).toFixed(2)
+    const mypin = parseFloat(pin).toFixed(2)
 
-    if (parseInt(pin) >= tot) {
+    if (tot > 0 && mypin >= tot && mypin > 0) {
+      const orders = {
+        products: cart,
+        customer: location.state ? location?.state?.data.customer : 'default',
+        amount: totalPrice(),
+        operator: organi.user,
+        // table: table?.name,
+        table: location?.state ? location.state?.data?.name : table?.name,
+        orderstatus: 'checkedIn',
+        tax: appsettings?.tax,
+        paid: tot,
+      }
+
       const res = await createOrder(organi?._id, organi?.user, orders)
 
       if (res) {
@@ -167,12 +176,13 @@ function Menu() {
           emptycart()
           getAlltables()
           // only works if it was reroute from reservation page
+          setPin('')
+          setOptions({ ...options, cash: !options.cash, payerror: '' })
           if (location.state) {
             navigate(location.pathname, {})
             setTable('')
           }
         } else {
-          setOptions({ ...options, cash: !options.cash })
           setOrderinfo('Please Select table')
           setNotification({
             ...notification,
@@ -181,6 +191,7 @@ function Menu() {
         }
       }
     } else {
+      setOptions({ ...options, payerror: 'Not Enough Amount' })
     }
   }
 
@@ -208,7 +219,7 @@ function Menu() {
       return (
         <>
           <p>Customer: {location?.state?.data.customer}</p>
-          <p>Table: {location?.state?.data.name}</p>
+          <p>Table: {location?.state?.data?.name}</p>
         </>
       )
     } else {
@@ -292,21 +303,26 @@ function Menu() {
 
           <div className='profile'>
             <div className='profile-photo'>
-              <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
+              <img src={`${S3PATH}/${opTyp?.img}`} alt='' />
             </div>
-            <span className='material-icons-sharp arrow-down'>expand_more</span>
             <span>{opTyp?.name?.split(' ')[0]}</span>
 
             <div className='dropdown'></div>
           </div>
         </div>
         <div className='menu__category item'>
-          <Carousel
+          {/* <Carousel
             products={eCate}
             slidesToShow={
               values?.categories?.length > 4 ? 4 : values?.categories?.length
             }
             responsive={responsive}
+          /> */}
+
+          <Emblamenu
+            slides={values?.categories}
+            options={OPTIONS}
+            handleCategory={categoryClick}
           />
           {!values.loading
             ? 'loading'
@@ -476,7 +492,9 @@ function Menu() {
       >
         <span
           className='material-icons-sharp pin__closeicon'
-          onClick={() => setOptions({ ...options, cash: !options.cash })}
+          onClick={() =>
+            setOptions({ ...options, cash: !options.cash, payerror: '' })
+          }
         >
           close
         </span>
@@ -485,7 +503,7 @@ function Menu() {
 
         <div className='login-password'>
           <input
-            type='number'
+            type='text'
             className='username'
             value={pin}
             required
@@ -525,6 +543,9 @@ function Menu() {
           </button>
           <button className='pin__number' onClick={() => handleChange('0')}>
             0
+          </button>
+          <button className='pin__number' onClick={() => handleChange('.')}>
+            .
           </button>
           <button className='pin__number' onClick={() => removechange()}>
             <span className='material-icons-sharp'>close</span>

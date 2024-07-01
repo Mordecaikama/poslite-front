@@ -27,7 +27,7 @@ function Operator() {
 
   const [error, setError] = useState({ email: '', name: '', password: '' })
 
-  const [opslength, setopslength] = useState(null)
+  const [opslength, setopslength] = useState([])
 
   const [hide, setHide] = useState({
     view: true,
@@ -49,7 +49,9 @@ function Operator() {
 
     if (res) {
       if (res.data) {
-        const lent = res.data?.[0]?.pagination?.[0]?.total - 1
+        const lent = res.data?.[0]?.pagination?.[0]?.total
+          ? res.data?.[0]?.pagination?.[0]?.total - 1
+          : 0
         // setOperators(res.data?.users)
         setOperators(res.data?.[0]?.totalData)
         setopslength(lent)
@@ -66,7 +68,7 @@ function Operator() {
         getAllOp()
         clearErrors()
       } else {
-        console.log(res.errors)
+        // console.log(res.errors)
         setError({ ...error, email: res.errors?.email })
       }
     }

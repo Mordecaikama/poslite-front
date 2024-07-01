@@ -3,7 +3,7 @@ import Notification from '../../../../../components/notification/notification'
 import { updateOperator, userprofile } from '../../../../services/user'
 import { Context } from '../../../../../context'
 
-import { FILE } from '../../../../../config'
+import { S3PATH } from '../../../../../config'
 
 function Appearance() {
   const { isAuthenticated, opTyp, setOpTyp } = useContext(Context)
@@ -75,7 +75,7 @@ function Appearance() {
             {selectedfile && selectedfile ? (
               <img src={selectedfile ? selectedfile : ''} alt='' />
             ) : (
-              <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
+              <img src={`${S3PATH}/${opTyp?.img}`} alt='' />
             )}
           </div>
           <div className='login-password'>

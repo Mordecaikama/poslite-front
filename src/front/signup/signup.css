@@ -46,19 +46,25 @@
 .login-container form > span {
   align-self: start;
   margin: 0px 15px 0px;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .login-forms {
-  width: 30rem;
+  width: 25rem;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* -webkit-box-shadow: 0px 0px 19px -4px rgba(0, 0, 0, 0.31); */
-  /* box-shadow: 0px 0px 19px rgba(94, 93, 93, 0.21); */
+  -webkit-box-shadow: 0px 0px 19px -4px rgba(0, 0, 0, 0.31);
+  box-shadow: 0px 0px 19px rgba(94, 93, 93, 0.21);
   padding: var(--card-padding);
+  border: 0.05rem solid var(--color-info-light);
+  border-radius: var(--border-radius-2);
+}
+
+.login-forms span {
+  font-size: 1rem;
 }
 
 .settings__form {
@@ -104,6 +110,10 @@
   font-weight: 200;
 }
 
+.frontend .login-password {
+  background: rgb(243, 243, 243);
+}
+
 .login-password .fa-eye-slash,
 .fa-eye {
   /* margin: 0px 10px; */
@@ -128,6 +138,10 @@ input[type='email'] {
   font-family: Roboto;
   background: none;
   color: var(--color-info-light);
+}
+
+.frontend input {
+  color: var(--color-info-dark);
 }
 
 input[type='file'] {
@@ -181,8 +195,20 @@ textarea {
   background: var(--color-bg1);
 }
 
+.password__container {
+  position: relative;
+}
+
 .validate {
   margin-bottom: 1rem;
+  position: absolute;
+  bottom: -100;
+  left: 10px;
+  background: rgba(255, 255, 255, 1);
+  display: none;
+}
+.showvalidate {
+  display: block;
 }
 
 .validate__sub {
@@ -267,12 +293,10 @@ textarea {
 
 /* =========== VERIFY OPERATOR PAGE =============*/
 
-@media screen and (max-width: 720px) {
-  /* .login-forms { */
-  /* width: 25rem; */
-  /* z-index: -1; */
-  /* display: none; */
-  /* } */
+@media screen and (min-width: 720px) {
+  .login-forms {
+    width: 30rem;
+  }
 
   /* .loginContainer__right {
     opacity: 0;

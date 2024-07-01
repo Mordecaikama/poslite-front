@@ -6,7 +6,7 @@ import { loginuser, verify } from '../services/user'
 function LoginForm() {
   const { authenticate, setApptoken, setOpTyp } = useContext(Context)
   const [values, setValues] = useState({
-    email: 'joefelservices@gmail.com',
+    email: '',
     password: '', //123456789
     emailError: '',
     pwdError: '',
@@ -192,7 +192,7 @@ function LoginForm() {
           </div>
         )}
       </div>
-      <div className='login-forms'>
+      <div className='login-forms frontend'>
         <h3>Login</h3>
         <i className='fas fa-user-friends'></i>
         <form>
@@ -248,17 +248,12 @@ function LoginForm() {
           {/* end of login button */}
 
           <div className='signup'>
-            <span
-              className='fg-pwd'
-              onClick={() => navigate('/password-reset')}
-            >
+            <span className='fg-pwd' onClick={() => {}}>
               forgotten password
             </span>
             <button
               className='Lgsignup'
-              onClick={(e) => {
-                e.preventDefault()
-              }}
+              onClick={() => navigate('/password-reset')}
             >
               Reset
             </button>

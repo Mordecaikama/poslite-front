@@ -55,7 +55,6 @@ function OrderTable({
     if (end < pages()) {
       setQuery({ ...query, skip: start + 1 })
       setRangeslice({ start: start + 1, end: end + 1 })
-    } else {
     }
   }
 
@@ -98,10 +97,10 @@ function OrderTable({
 
       <div
         className={` ${
-          orders && orders.length < 1 && 'food__container no__item'
+          orders && orders?.length < 1 && 'food__container no__item'
         }`}
       >
-        {orders && orders.length < 1 ? (
+        {orders && orders?.length < 1 ? (
           <>
             <span className='material-icons-sharp no__bag'>shopping_bag</span>
             <p>No Orders in Your Organisation.</p>
@@ -114,9 +113,9 @@ function OrderTable({
                 <th>
                   <input
                     type='checkbox'
-                    checked={rad.length === orders?.length}
+                    checked={rad?.length === orders?.length}
                     onClick={() =>
-                      orders && rad.length === orders?.length
+                      orders && rad?.length === orders?.length
                         ? setRad([])
                         : setRad(orders)
                     }
@@ -126,7 +125,6 @@ function OrderTable({
                 <th>Date</th>
                 <th>Customer</th>
                 <th>Total</th>
-                <th>Paid</th>
                 <th>Status</th>
                 <th>Table</th>
                 <th>Total Orders</th>
@@ -155,21 +153,21 @@ function OrderTable({
                       </td>
                       <td>{moment(order.createdAt).fromNow()}</td>
                       <td>{order.customer} </td>
-                      <td>{Math.ceil(order.amount)}</td>
-                      <td> {Math.ceil(order.amount)} </td>
+                      <td>{(order?.amount + order?.tax * 100).toFixed(2)}</td>
+
                       <td>
                         <span className='badge'>{showStatus(order)}</span>
                       </td>
                       <td>{order.table}</td>
-                      <td>{order?.products.length} </td>
+                      <td>{order?.products?.length} </td>
                       <td>{order.operator?.name}</td>
-                      <td>{order.transaction_id}</td>
+                      <td>{order._id.slice(0, 5)}</td>
                       <td>
                         {/* {rad.length < 2 && hovered && cVoterRow._id === voter._id && ( */}
 
                         <div
                           className={`btn-group ${
-                            rad.length < 2 &&
+                            rad?.length < 2 &&
                             hovered &&
                             cVoterRow._id === order._id &&
                             'btn__show'
@@ -195,7 +193,7 @@ function OrderTable({
         )}
       </div>
 
-      {/* <div className='paginate__range'>
+      <div className='paginate__range'>
         {showmore() && (
           <button className='btn-outline vt_btn' onClick={prevProduct}>
             <span className='material-icons-sharp kl'>keyboard_arrow_left</span>
@@ -223,8 +221,8 @@ function OrderTable({
             </span>
           </button>
         )}
-      </div> */}
-      {/* {JSON.stringify(pages())} */}
+      </div>
+      {/* {JSON.stringify(orders)} */}
       {/* {JSON.stringify(showmore())} */}
     </div>
   )

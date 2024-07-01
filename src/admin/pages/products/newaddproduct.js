@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import AddCategory from '../category/add'
 import {
+  allCat,
   allCategory,
   createCategory,
   updateCategory,
@@ -10,7 +11,7 @@ import { FileUploader } from 'react-drag-drop-files'
 import { Context } from '../../../context'
 import Notification from '../../../components/notification/notification'
 import { useLocation, useNavigate } from 'react-router'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 
 const fileTypes = ['JPG', 'PNG', 'GIF']
 
@@ -19,7 +20,7 @@ function Addnewproduct() {
   const [values, setValues] = useState({
     name: '',
     description: '',
-    price: 1,
+    price: 0,
     category: '',
     photo: null,
     form: new FormData(),
@@ -154,7 +155,7 @@ function Addnewproduct() {
   }
 
   const getCat = async () => {
-    const res = await allCategory(user?._id, user?.user)
+    const res = await allCat(user?._id, user?.user)
 
     if (res) {
       let val = res.data?.category[0]?._id
@@ -254,7 +255,7 @@ function Addnewproduct() {
                 // this side is for edit; when an image exist
                 // show image
                 <label htmlFor='file' className='profile'>
-                  <img src={`${FILE}/images/${photo}`} alt='' />
+                  <img src={`${S3PATH}/${photo}`} alt='' />
                   <input
                     type='file'
                     id='file'
@@ -271,7 +272,7 @@ function Addnewproduct() {
                   <img src={selectedfile} alt='logo' />
                 </div>
                 <div className='text'>
-                  <p>{selectedfile}</p>
+                  <p>{selectedfile.name}</p>
                   <p>482 kb</p>
                 </div>
 
@@ -286,10 +287,10 @@ function Addnewproduct() {
               photo && (
                 <div className='image__item'>
                   <div className='profile-photo'>
-                    <img src={`${FILE}/images/${photo}`} alt='' />
+                    <img src={`${S3PATH}/${photo}`} alt='' />
                   </div>
                   <div className='text'>
-                    <p>{photo}</p>
+                    <p>img</p>
                     <p>482 kb</p>
                   </div>
                 </div>
@@ -365,7 +366,6 @@ function Addnewproduct() {
             </div>
           </div>
         </div>
-        {/* {JSON.stringify(values)} */}
       </div>
 
       {/*  up product */}

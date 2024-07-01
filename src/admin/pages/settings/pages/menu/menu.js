@@ -52,6 +52,23 @@ function Menu({ appsettings, handleChange, save }) {
             />
           </div>
         </article>
+        <article>
+          <div className='info'>
+            <h4>Category Image </h4>
+            <p>
+              When this option is enabled, category image on the menu page is
+              shown.
+            </p>
+          </div>
+          <label class='switch'>
+            <input
+              type='checkbox'
+              checked={appsettings?.catImage}
+              onChange={handleChange('catImage')}
+            />
+            <span class='slider round'></span>
+          </label>
+        </article>
         <button className='btn-reset' onClick={save}>
           Save
         </button>

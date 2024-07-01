@@ -51,7 +51,7 @@ export const allCategory = async (orgId, userId, filter) => {
   }
 }
 
-export const allCat = async (orgId, userId, filter) => {
+export const allCat = async (orgId, userId) => {
   // userinfo in an object e.g {username,password}
   // const query = queryString.stringify(filter)
   const data = await axios.get(`${API}/categorys/${orgId}/${userId}`)

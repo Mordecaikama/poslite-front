@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../../../../../context'
-import { FILE } from '../../../../../config'
+import { FILE, S3PATH } from '../../../../../config'
 import Notification from '../../../../../components/notification/notification'
 import { getOrganisation, updateOrganisation } from '../../../../services/user'
 
@@ -86,7 +86,7 @@ function Profile() {
               {selectedfile && selectedfile ? (
                 <img src={selectedfile ? selectedfile : ''} alt='' />
               ) : (
-                <img src={`${FILE}/images/${logo}`} alt='' />
+                <img src={`${S3PATH}/${logo}`} alt='' />
               )}
             </div>
             <div className='login-password'>

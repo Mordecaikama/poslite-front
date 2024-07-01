@@ -19,6 +19,7 @@ import Timeline from '../reservation/timeline'
 import { getOrganisation, userprofile } from '../../services/user'
 import { Context } from '../../../context'
 import { Tableoverview } from '../../services/table'
+import Error from '../../../front/404'
 
 function Homepage() {
   const { pathname } = useLocation()
@@ -119,6 +120,8 @@ function Homepage() {
             path='/users/*'
             element={<AdminRoute Component={OperatorRoute} />}
           />
+
+          <Route path='*' element={<Error />} />
         </Routes>
       </div>
     </div>

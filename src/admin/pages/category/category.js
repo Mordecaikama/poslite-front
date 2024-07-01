@@ -32,7 +32,7 @@ function Category() {
     skip: 0,
   })
 
-  const [catlength, setCatlength] = useState(null)
+  const [catlength, setCatlength] = useState([])
 
   const [rad, setRad] = useState([]) // helps in grouping array of selected voters
 
@@ -74,7 +74,11 @@ function Category() {
         // setCategories(res.data?.category)
         // console.log(res.data)
         setCategories(res.data?.[0]?.totalData)
-        setCatlength(res.data?.[0]?.pagination?.[0]?.total)
+        setCatlength(
+          res.data?.[0]?.pagination?.[0]?.total
+            ? res.data?.[0]?.pagination?.[0]?.total
+            : 0
+        )
       }
     }
   }

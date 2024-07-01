@@ -1,10 +1,11 @@
 import React from 'react'
 import Header from './header'
+import { Link } from 'react-router-dom'
 
 export default function Homepage() {
   return (
-    <div className='container'>
-      <section className='jumbotron'>
+    <div className=''>
+      <section className='jumbotron container'>
         <Header />
 
         <main>
@@ -16,7 +17,9 @@ export default function Homepage() {
               - all in one place
             </span>
 
-            <button className='moreBtn'>Get Started</button>
+            <Link to='/signin'>
+              <button className='moreBtn'>Get Started</button>
+            </Link>
           </div>
 
           <div className='right'>
@@ -28,30 +31,40 @@ export default function Homepage() {
       <section className='feature__1'>
         <div className='top'>
           <h1>Take Your Restaurant to the Next level with KamaPOS</h1>
-          <p>
-            Effortlessly manage your restaurant or shop inventory, sales and
-            customer relationships with kamaPOS user-friendly platform
-          </p>
         </div>
-        <div className='bottom'>
+        <div className='container grid__container '>
           <div className='card'>
-            <span class='material-icons-sharp'>approval</span>
-            <h4>Efficient inventory management</h4>
-            <p>
-              KamaPOS simplifies books inventory management with features such
-              as stock tracking, automatic reordering, and low stock
-              notifications.
-            </p>
+            <img src={require('../../assets/images/cosydashlap.png')} alt='' />
+            <div className='bottom'>
+              <h2>Simplicity</h2>
+              <p>
+                Simplifies Orders and inventory management with features such as
+                stock tracking, automatic reordering and low stock.
+              </p>
+            </div>
           </div>
           <div className='card'>
-            <span class='material-icons-sharp'>approval</span>
-            <h4>Increased Sales</h4>
-            <p>
-              KamaPOS sales tracking features provide users with valuable
-              insights into product performance, slaes trends and customer
-              behaviour.
-            </p>
+            <img src={require('../../assets/images/postrack.png')} alt='' />
+            <div className='bottom'>
+              <h2>Tracking</h2>
+              <p>
+                KamaPOS sales tracking features provide users with valuable
+                insights into product performance, slaes trends and customer
+                behaviour.
+              </p>
+            </div>
           </div>
+          <div className='card'>
+            <img src={require('../../assets/images/uidash.png')} alt='' />
+            <div className='bottom'>
+              <h2>Product Filter</h2>
+              <p>
+                Refine your search by selecting from a range of product
+                categories to find exactly what your need.
+              </p>
+            </div>
+          </div>
+          {/* 
           <div className='card'>
             <span class='material-icons-sharp'>approval</span>
             <h4>Filter by Product Category</h4>
@@ -67,17 +80,17 @@ export default function Homepage() {
               Intuitive displays for point of sales systems allow for easier and
               more efficient use in managing sales transactions
             </p>
-          </div>
+          </div> */}
         </div>
       </section>
 
-      <section className='latest__blog'>
+      <section className='latest__blog container'>
         <div className='top'>
           <h1>Latest blog posts</h1>
           <button>view all posts</button>
         </div>
 
-        <div className='featured__blog'>
+        <div className='featured__blog '>
           <div className='blog__card'>
             <img
               className='blog__img'
@@ -150,7 +163,25 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className='pricing'>
+      <section className='designs container'>
+        <div className=''>
+          <article>
+            <img src={require('../../assets/images/dash.png')} alt='' />
+            <div className='details'>
+              <h1>Online Bookings</h1>
+              <p>
+                Book your productivity with our focus. Time feature,
+                Effortlessly block out distractions and dedicate uinterrupted
+                precious to your most important tasks, wheteherits competeing a
+                report brainstroming or deep work, Our Focus time tool helps you
+                scheme more in time.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className='pricing container'>
         <div className='top'>
           <h1>You are not mistaken</h1>
           <p>
@@ -160,7 +191,7 @@ export default function Homepage() {
           </p>
         </div>
 
-        <div className='container pricing__cards grid__container'>
+        <div className=' pricing__cards grid__container'>
           <div className='card'>
             <div className='card__top'>
               <div className='info'>
@@ -293,10 +324,54 @@ export default function Homepage() {
               </div>
             </div>
           </div>
+          <div className='card'>
+            <div className='card__top'>
+              <div className='info'>
+                <span>Custom</span>
+                <span className='label'>popular</span>
+              </div>
+
+              <div className='price'>
+                <span>$80</span> per month
+              </div>
+
+              <p>One app only unlimited users</p>
+              <button className='active'>Get started</button>
+              <button>Free trials</button>
+            </div>
+
+            <div className='features'>
+              <h4>FEATURES</h4>
+              <div className='item'>
+                <span className='material-icons-sharp'>
+                  check_circle_outline
+                </span>
+                <span>Access to basic features</span>
+              </div>
+              <div className='item'>
+                <span className='material-icons-sharp'>
+                  check_circle_outline
+                </span>
+                <span>Basic reporting and Analytics</span>
+              </div>
+              <div className='item'>
+                <span className='material-icons-sharp'>
+                  check_circle_outline
+                </span>
+                <span>Up to 10 individual users</span>
+              </div>
+              <div className='item'>
+                <span className='material-icons-sharp'>
+                  check_circle_outline
+                </span>
+                <span>Basic chat and email support</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className='testimony'>
+      <section className='testimony container'>
         <div className='left'>
           <div className='ratings'>
             {[...Array(5)].map((item, ind) => {
@@ -310,8 +385,8 @@ export default function Homepage() {
             traceability on our Product Lifecycle."
           </h1>
           <div className='info'>
-            <h4>Joshua Linniker</h4>
-            <span>254 BroomLane, Levensulme Manchester.</span>
+            <h4>Joyce Linniker</h4>
+            <span> Levensulme Manchester.</span>
           </div>
         </div>
 
@@ -320,14 +395,14 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className='feature__2'>
+      {/* <section className='feature__2'>
         <p>Streamline Your Restaurant Operation with KamaPOS</p>
         <span>
           Simplify Restaurant Operations and Free Up Time with KamaPOS system
         </span>
-      </section>
+      </section> */}
 
-      <section className='feature__3'>
+      {/* <section className='feature__3'>
         <div className='left'>
           <h2>Stock Management</h2>
           <p>
@@ -345,6 +420,28 @@ export default function Homepage() {
           </p>
           <span>Learn more </span>
           <span className='materials-icons-sharp'>arrow</span>
+        </div>
+      </section> */}
+
+      <section className='footer__container'>
+        <div className='container'>
+          <article>
+            <Link to='/'>Home</Link>
+            <a href='#'>Pricing</a>
+            <a href='#'>Reviews</a>
+            <a href='#'>Contact</a>
+          </article>
+          <article>
+            <a href='#'>Blog</a>
+            <Link to='/signin'>Login</Link>
+            <Link to='/signup'>Register</Link>
+          </article>
+          <article>
+            <h4>SUPPORT</h4>
+            <a href='#'>Support Center</a>
+            <a href='#'>Knowledge Base</a>
+            <a href='#'>New Support Ticket</a>
+          </article>
         </div>
       </section>
     </div>

@@ -1,4 +1,5 @@
 import './App.css'
+import './embla.css'
 import './homepage.css'
 import { Routes, Route } from 'react-router-dom'
 import LoginForm from './front/login/login'
@@ -12,6 +13,8 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import VerifyCode from './front/verifycode/verifycode'
 import VerifyOperator from './front/operator/verifyop'
+import ResetPassword from './front/login/resetPassword'
+import ForgottenPassword from './front/login/forgottenpassword'
 
 function App() {
   return (
@@ -32,6 +35,8 @@ function App() {
           path='/companyname/*'
           element={<AdminRoute Component={AdminDashboard} />}
         />
+
+        <Route exact path='/password-reset' element={<ForgottenPassword />} />
 
         <Route path='*' element={<Error />} />
       </Routes>

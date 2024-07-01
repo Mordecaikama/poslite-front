@@ -9,7 +9,7 @@ import {
   Tableoverview,
 } from '../../services/table'
 import Add from './add'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 import TablemgmtMobile from '../../../components/tablemgmtmobile'
 
 function Reservation() {
@@ -114,8 +114,8 @@ function Reservation() {
         getAlltables()
       })
       .catch((error) => {
-        false
-        // console.log(error)
+        // false
+        console.log(error)
       })
   }
   const handleTableCheckinYes = async () => {
@@ -198,7 +198,7 @@ function Reservation() {
 
           <div className='profile'>
             <div className='profile-photo'>
-              <img src={`${FILE}/images/${opTyp?.img}`} alt='' />
+              <img src={`${S3PATH}/${opTyp?.img}`} alt='' />
             </div>
             <span className='material-icons-sharp arrow-down'>expand_more</span>
             <span>{opTyp?.name?.split(' ')[0]}</span>

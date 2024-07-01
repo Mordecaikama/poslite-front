@@ -1,38 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react'
 import OverviewCard from '../../../components/cards/overview'
 import { userdata } from '../../../data'
+// import HorizontalBar from './graph/hbar'
 import Piechart from './graph/pie'
+import LineChart from './graph/line'
 
-import { OrdersGraph, ordersOverview } from '../../services/order'
+import { OrdersGraph, listOrders, ordersOverview } from '../../services/order'
 
 // import 'chart.js/auto'
+// import { Bar, Line } from 'react-chartjs-2'
 import { chart as ChartJS } from 'chart.js/auto'
 import { Context } from '../../../context'
 import DateFilter from '../../../components/datefilter/datefilter'
 
 import DatePicker, { DateObject } from 'react-multi-date-picker'
 import { getUsers } from '../../services/user'
+import { Bar } from 'react-chartjs-2'
+
+import sourceData from '../../../assets/sourceData.json'
+import HorizontalBar from './graph/hbar'
 
 function Overview() {
   const { isAuthenticated, opTyp } = useContext(Context)
-  const [graphData, setGraphData] = useState(null)
+
   const [currents, setCurrents] = useState({
     type: '',
     bartype: 'hbar',
   })
+
+  const [lateOrders, setLateOrders] = useState(null)
   const [userdt, setUserdt] = useState({
     labels: [],
     datasets: [
       {
-        label: userdata.map((data) => data.year),
-        data: userdata.map((data) => data.userGain),
+        label: 'hbar',
+        data: [], //userdata.map((data) => data.userGain),
       },
     ],
   })
 
   const [Filters, setFilters] = useState({
-    dates: [],
-    operator: null,
+    createdAt: 'desc',
   })
 
   const [dateObj, setdateObj] = useState(['days', 'months', 'year'])
@@ -40,8 +48,8 @@ function Overview() {
   const [currentdate, setCurrentdate] = useState('days')
 
   const [dt, setdt] = useState([
-    new DateObject().subtract(1, 'days'),
-    new Date(),
+    // new DateObject().subtract(1, 'days'),
+    new Date().toISOString().slice(0, 10),
   ])
 
   const [operators, setOperators] = useState([])
@@ -51,14 +59,53 @@ function Overview() {
 
   const user = isAuthenticated('user')
 
-  const handleGraphchange = () => {
-    return <Piechart data={userdt} />
+  const handleGraphchange = (name) => {
+    if (currents.bartype === 'hbar') {
+      return <Bar data={userdt} />
+    } else if (currents.bartype === 'pie') {
+      return <Piechart data={userdt} />
+    } else if (currents.bartype === 'Line') {
+      return <LineChart data={userdt} />
+    } else {
+      return <h2>No graph Yet</h2>
+    }
+  }
+
+  const handleChange = (name) => (event) => {
+    setCurrents({ ...currents, [name]: event.target.value })
+
+    setUserdt({
+      labels: orders?.map((lab) => lab?._id),
+      datasets: [
+        {
+          label: event.target.value,
+          data: orders?.map((item) => item?.count),
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            'rgb(153, 102, 255)',
+            'rgb(201, 203, 207)',
+          ],
+          borderRadius: 5,
+          scales: {
+            x: {
+              grid: {
+                color: 'red',
+              },
+            },
+          },
+        },
+      ],
+    })
   }
 
   useEffect(() => {
     getOrderOverview()
     getAllOp()
-    // getgraphdata()
+    getAllorders()
   }, [dt, operator])
 
   const getOrderOverview = async () => {
@@ -75,34 +122,28 @@ function Overview() {
 
     if (res) {
       if (res.data) {
-        // console.log(res.data)
-        setOrders(res.data)
+        setOrders(res.data) //same as graph data
+        setUserdt({
+          labels: res.data?.map((lab) => lab?._id),
+          datasets: [
+            {
+              label: userdt?.bartype,
+              data: res.data?.map((item) => item?.count),
+              backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)',
+              ],
+              borderRadius: 5,
+            },
+          ],
+        })
       }
     }
-  }
-
-  const getgraphdata = async () => {
-    const filter = {
-      operator:
-        opTyp?.permission === 'admin' && operator?.name === 'All'
-          ? {}
-          : opTyp?.permission === 'operator'
-          ? opTyp?._id
-          : operator?._id,
-      dates: dt,
-    }
-
-    const res = await OrdersGraph(user?._id, user?.user, filter)
-
-    // if (res) {
-    // if (res.data) {
-    // console.log(res.data)
-    // const proc = res.data[0]?.totalData.filter(
-    //   (item) => item?.status === 'Processing'
-    // )
-    // console.log(proc)
-    // }
-    // }
   }
 
   const getAllOp = async () => {
@@ -124,10 +165,35 @@ function Overview() {
 
   const handleOpChange = (value) => (event) => {
     // adds the pin numbers in a string format
-    // console.log(value)
+
     const res = operators.filter((op) => op?.name === event.target.value)
 
     setOperator(res && res[0])
+  }
+
+  const getAllorders = async () => {
+    // checks to see if operator is admin and all is selected then it selects all else if operator is 'operator'
+    // then selects current operator id else selected operator from dropdown
+    let filters = {
+      // default is all n no option to reselect so it defaults to current operator
+      ...Filters,
+      operator:
+        opTyp?.permission === 'admin' && operator?.name === 'All'
+          ? {}
+          : opTyp?.permission === 'operator'
+          ? opTyp?._id
+          : operator?._id,
+      dates: [new Date().toISOString().slice(0, 10)],
+      limit: 10,
+      skip: 0,
+    }
+    const res = await listOrders(user?._id, user?.user, filters)
+
+    if (res) {
+      if (res.data) {
+        setLateOrders(res.data?.[0]?.totalData.slice(0, 5))
+      }
+    }
   }
 
   const OperatorsComponent = () => {
@@ -178,6 +244,8 @@ function Overview() {
           {OperatorsComponent()}
         </div>
 
+        {/* // orders overview  */}
+        <h2>Orders Based on Date</h2>
         <div className='overview__cards'>
           {orders?.map((item, ind) => {
             return (
@@ -204,115 +272,56 @@ function Overview() {
           />
         </div> */}
 
+        {/* late orders  */}
         <div className='overview_details'>
+          <h2>Todays Current Orders</h2>
           <div className='table__progress'>
-            <div className='card'>
-              <div className='title'>
-                <span>#231128001</span>
-                <span>Table a12</span>
-              </div>
-              <div className='info'>Rachmad Jailani</div>
-              <div className='card_b'>
-                <div className='progress'>
-                  <svg>
-                    <circle cx='38' cy='38' r='36'></circle>
-                  </svg>
-                  <div className='number'>
-                    <p>80%</p>
+            {lateOrders?.map((item, ind) => {
+              return (
+                <div className='card'>
+                  <div className='title'>
+                    <span>#{item?._id.slice(0, 5)}</span>
+                    <span>Table {item?.table}</span>
+                  </div>
+                  <div className='info'>Customer: {item?.customer}</div>
+                  <div className='card_b'>
+                    <span>{item?.status}</span>
+                    <p>
+                      {item?.products.length}
+                      {`${item?.products.length > 1 ? ' items' : ' item'}`}
+                    </p>
                   </div>
                 </div>
-                <span>Processing</span>
-                <span>6 items </span>
-              </div>
-            </div>
-            <div className='card'>
-              <div className='title'>
-                <span>#231128001</span>
-                <span>Table a12</span>
-              </div>
-              <div className='info'>Rachmad Jailani</div>
-              <div className='card_b'>
-                <div className='progress'>
-                  <svg>
-                    <circle cx='38' cy='38' r='36'></circle>
-                  </svg>
-                  <div className='number'>
-                    <p>80%</p>
-                  </div>
-                </div>
-                <span>Processing</span>
-                <span>6 items </span>
-              </div>
-            </div>
-            <div className='card'>
-              <div className='title'>
-                <span>#231128001</span>
-                <span>Table a12</span>
-              </div>
-              <div className='info'>Rachmad Jailani</div>
-              <div className='card_b'>
-                <div className='progress'>
-                  <svg>
-                    <circle cx='38' cy='38' r='36'></circle>
-                  </svg>
-                  <div className='number'>
-                    <p>80%</p>
-                  </div>
-                </div>
-                <span>Processing</span>
-                <span>6 items </span>
-              </div>
-            </div>
+              )
+            })}
           </div>
 
           <div></div>
         </div>
 
         <div className='overview__graphs'>
+          <h2>Graphs Representation</h2>
           <div className='revenue__today'>
             <p className='title'>Revenue In</p>
-
-            <div className='revenue__container'>
-              <div className='revenue__left'>
-                {handleGraphchange('bartype')}
-              </div>
-              <div className='revenue__right'>
-                <div className='top'>
-                  <div className='info'>
-                    <p>
-                      <span className='dot'></span>
-                      <span>Dine In</span>
-                    </p>
-                    <p>
-                      <h4 className='percent'>15%(Order)</h4>
-                    </p>
-                  </div>
-                </div>
-                <div className='bottom'>
-                  <div className='info'>
-                    <p>
-                      <span className='dot'></span>
-                      <span>Dine In</span>
-                    </p>
-                    <p>
-                      <h4 className='percent'>15%(Order)</h4>
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className='header'>
+              <select
+                value={currents.bartype}
+                onChange={handleChange('bartype')}
+              >
+                <option value='hbar'>Horizontal Bar</option>
+                <option value='pie'>Pie</option>
+                <option value='Line'>Line</option>
+              </select>
             </div>
-          </div>
-          <div className='revenue__today'>
-            <p className='title'>All Revenue</p>
 
             <div className='revenue__container'>
-              <div className='revenue__left'>
-                <span>Estimated Total Revenue</span>
-                <p>
-                  <span className='currency'>Rp</span> 500.000.000
-                </p>
-                <span>100 Order</span>
-              </div>
+              {orders && orders.length > 0 ? (
+                handleGraphchange('bartype')
+              ) : (
+                <div className='no__graph'>
+                  <h2>No Projected Graph</h2>
+                </div>
+              )}
             </div>
           </div>
         </div>

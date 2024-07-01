@@ -6,7 +6,7 @@ import { Logout } from '../services/user'
 function Sidebar({ operator, path }) {
   const { menu, setMenu, isAuthenticated, tableoverview } = useContext(Context)
 
-  const sidebarRef = useRef(null)
+  const sidebarRef = useRef('<aside>sidebar</aside>')
 
   const user = isAuthenticated('user')
   const navigate = useNavigate()
@@ -28,15 +28,12 @@ function Sidebar({ operator, path }) {
   }, [])
 
   const handleSidebar = (e) => {
-    if (!sidebarRef.current.contains(e.target)) {
+    if (!sidebarRef.current?.contains(e.target)) {
       setMenu(false)
     }
   }
 
   const mouseEnterOut = () => {
-    //checks if user exists before it looksup for sidebar
-    // if (menu) {
-    // }
     document.addEventListener('mousedown', handleSidebar)
 
     return () => {
@@ -49,7 +46,7 @@ function Sidebar({ operator, path }) {
       <aside>
         <div className='top'>
           <span className='material-icons-sharp'>bakery_dining</span>
-          <h3>MordePOS</h3>
+          <h3>kamaPOS</h3>
         </div>
 
         <div className='sidebar'>

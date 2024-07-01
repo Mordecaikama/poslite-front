@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 export default function Header() {
   return (
     <header>
-      <div className='logo'>logo</div>
+      <div className='profile-photo'>
+        <img src={require('../../assets/images/logo.jpg')} alt='logo' />
+      </div>
       <nav>
         <a href='#'>About</a>
         <a href='#'>Features</a>

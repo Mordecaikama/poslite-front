@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 
 function ProductTable({
   products,
@@ -153,7 +153,7 @@ function ProductTable({
 
                       <td className='table-img'>
                         <img
-                          src={`${FILE}/images/${product?.img[0]}`}
+                          src={`${S3PATH}/${product?.img[0]}`}
                           alt={product?.name}
                         />
                       </td>
@@ -212,7 +212,7 @@ function ProductTable({
             <span className='material-icons-sharp kl'>keyboard_arrow_left</span>
           </button>
         )}
-        {/* slice(start, end). */}
+
         {[...Array(productslength()).keys()]
           .slice(start, end)
           .map((it, ind) => {

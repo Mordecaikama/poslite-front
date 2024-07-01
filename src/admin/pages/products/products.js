@@ -10,7 +10,7 @@ import {
 } from '../../services/menu'
 import { Context } from '../../../context'
 import Notification from '../../../components/notification/notification'
-import { allCategory } from '../../services/category'
+import { allCat } from '../../services/category'
 
 function Products() {
   const { isAuthenticated, appsettings } = useContext(Context)
@@ -35,7 +35,7 @@ function Products() {
   })
   const [categories, setCategories] = useState([])
 
-  const [productslength, setProductslength] = useState(null)
+  const [productslength, setProductslength] = useState([])
 
   const [rad, setRad] = useState([]) // helps in grouping array of selected voters
 
@@ -69,17 +69,20 @@ function Products() {
     if (res) {
       if (res.data) {
         setProducts(res.data?.[0]?.totalData)
-        setProductslength(res.data?.[0]?.pagination?.[0]?.total)
+        setProductslength(
+          res.data?.[0]?.pagination?.[0]?.total
+            ? res.data?.[0]?.pagination?.[0]?.total
+            : 0
+        )
         getCat()
       }
     }
   }
 
   const getCat = async () => {
-    const res = await allCategory(user?._id, user?.user)
+    const res = await allCat(user?._id, user?.user)
 
     if (res) {
-      // console.log(res.data)
       if (res.data) {
         setCategories(res.data?.category)
       }

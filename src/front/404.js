@@ -1,7 +1,9 @@
 import React from 'react'
 
 function Error() {
-  return <div>Sorry wrong page please go to home page</div>
+  return (
+    <div className='error__page'>Sorry wrong page please go to home page</div>
+  )
 }
 
 export default Error

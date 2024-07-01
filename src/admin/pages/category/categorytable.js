@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 
 function Categorytable({
   categories,
@@ -150,7 +150,7 @@ function Categorytable({
                       </td>
                       <td className='table-img'>
                         <img
-                          src={`${FILE}/images/${category?.img}`}
+                          src={`${S3PATH}/${category?.img}`}
                           alt={category?.name}
                         />
                       </td>
@@ -197,7 +197,6 @@ function Categorytable({
             <span className='material-icons-sharp kl'>keyboard_arrow_left</span>
           </button>
         )}
-        {/* slice(start, end). */}
         {[...Array(pages()).keys()].slice(start, end).map((it, ind) => {
           const numba = it + 1
           return (

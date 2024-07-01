@@ -30,6 +30,7 @@ function Category({ appsettings, handleChange, save }) {
             />
           </div>
         </article>
+
         <button className='btn-reset' onClick={save}>
           Save
         </button>

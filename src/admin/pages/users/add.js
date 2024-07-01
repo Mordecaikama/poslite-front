@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { FILE } from '../../../config'
+import { FILE, S3PATH } from '../../../config'
 
 function AddOperator({
   addOp,
@@ -154,7 +154,7 @@ function AddOperator({
               // this side is for edit; when an image exist
               // show image
               <label htmlFor='file' className='profile'>
-                <img src={`${FILE}/images/${photo}`} alt='' />
+                <img src={`${S3PATH}/${photo}`} alt='' />
                 <input
                   type='file'
                   id='file'

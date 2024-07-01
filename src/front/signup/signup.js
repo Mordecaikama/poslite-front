@@ -7,8 +7,8 @@ function SignUpForm() {
   const navigate = useNavigate()
   const [values, setValues] = useState({
     name: '',
-    email: 'mord@gmail.com',
-    password: 'test123',
+    email: '',
+    password: '',
     gender: 'male',
     organisation: '',
     confirm: '',
@@ -30,12 +30,25 @@ function SignUpForm() {
     confirm: false,
   })
 
+  const [pwdValidate, setPwdValidate] = useState(false)
+
   const [pwd, setPwd] = useState({
     small: { pattern: /[a-z\d]{1,}/i, state: false },
     dig: { pattern: /\d+/, state: false },
     cap: { pattern: /[A-Z]+/, state: false },
     speci: { pattern: /[#$@!%&*?\;]+/, state: false },
     min: { pattern: /^[A-Za-z\d#$@!%&*?\;\.]{8,}$/, state: false },
+  })
+
+  const [patterns, setPatterns] = useState({
+    telephone: { pattern: /^\d{11}$/, state: false },
+    username: { pattern: /^[a-z\d]{5,12}$/i, state: false },
+    password: pwd,
+    slug: { pattern: /^[a-z\d-]{8,20}$/, state: false },
+    email: {
+      pattern: /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/,
+      state: false,
+    },
   })
 
   const {
@@ -86,6 +99,13 @@ function SignUpForm() {
       if (res.data) {
         navigate(`/confirm-email`)
         clearForms()
+      } else {
+        setValues({
+          ...values,
+          nameError: res.err?.name,
+          emailError: res.err?.email,
+          pwdError: res.err?.password,
+        })
       }
     }
   }
@@ -111,7 +131,7 @@ function SignUpForm() {
 
   return (
     <div className='login-container'>
-      <div className='login-forms'>
+      <div className='login-forms frontend'>
         <h3>Create Your Account</h3>
         <i className='fas fa-user-friends'></i>
         <form onSubmit={submit}>
@@ -142,63 +162,73 @@ function SignUpForm() {
           <span className='error'>{emailError}</span>
 
           <span>Password</span>
-          <div
-            className='login-password'
-            style={{ borderColor: `${pwdErrorState && 'red'}` }}
-          >
-            <input
-              type={status.main ? 'text' : 'password'}
-              placeholder='password'
-              value={password}
-              required
-              onChange={handleChange('password')}
-            />
-            {status.main ? (
-              <i
-                className='fas fa-eye'
-                onClick={() => setStatus({ ...status, main: !status.main })}
-              ></i>
-            ) : (
-              <i
-                className='fas fa-eye-slash'
-                onClick={() => setStatus({ ...status, main: !status.main })}
-              ></i>
-            )}
-          </div>
-          <span className='error'>{pwdError}</span>
-          <div className='validate'>
-            <div className='validate__sub'>
-              <i
-                className={`fas fa-check-circle ${pwd.min.state && 'correct'}`}
-              ></i>
 
-              <span className={`${pwd.min.state && 'correct'}`}>
-                Enter between 8 to 20 characters
-              </span>
+          <div className='password__container'>
+            <div
+              className='login-password password'
+              style={{ borderColor: `${pwdErrorState && 'red'}` }}
+            >
+              <input
+                type={status.main ? 'text' : 'password'}
+                placeholder='password'
+                onFocus={() => setPwdValidate(true)}
+                onBlur={() => setPwdValidate(false)}
+                value={password}
+                required
+                onChange={handleChange('password')}
+              />
+              {status.main ? (
+                <i
+                  className='fas fa-eye'
+                  onClick={() => setStatus({ ...status, main: !status.main })}
+                ></i>
+              ) : (
+                <i
+                  className='fas fa-eye-slash'
+                  onClick={() => setStatus({ ...status, main: !status.main })}
+                ></i>
+              )}
             </div>
-            <div className='validate__sub'>
-              <i
-                className={`fas fa-check-circle ${
-                  pwd.cap.state && pwd.small.state && 'correct'
-                }`}
-              ></i>
-              <span
-                className={`${pwd.cap.state && pwd.small.state && 'correct'}`}
-              >
-                An uppercase and lowercase letter
-              </span>
-            </div>
-            <div className='validate__sub'>
-              <i
-                className={`fas fa-check-circle ${
-                  pwd.speci.state && pwd.dig.state && 'correct'
-                }`}
-              ></i>
-              <span
-                className={` ${pwd.speci.state && pwd.dig.state && 'correct'}`}
-              >
-                A number and symbol
-              </span>
+            <span className='error'>{pwdError}</span>
+            <div className={`validate ${pwdValidate && 'showvalidate'}`}>
+              <div className='validate__sub'>
+                <i
+                  className={`fas fa-check-circle ${
+                    pwd.min.state && 'correct'
+                  }`}
+                ></i>
+
+                <span className={`${pwd.min.state && 'correct'}`}>
+                  Enter between 8 to 20 characters
+                </span>
+              </div>
+
+              <div className='validate__sub'>
+                <i
+                  className={`fas fa-check-circle ${
+                    pwd.cap.state && pwd.small.state && 'correct'
+                  }`}
+                ></i>
+                <span
+                  className={`${pwd.cap.state && pwd.small.state && 'correct'}`}
+                >
+                  An uppercase and lowercase letter
+                </span>
+              </div>
+              <div className='validate__sub'>
+                <i
+                  className={`fas fa-check-circle ${
+                    pwd.speci.state && pwd.dig.state && 'correct'
+                  }`}
+                ></i>
+                <span
+                  className={` ${
+                    pwd.speci.state && pwd.dig.state && 'correct'
+                  }`}
+                >
+                  A number and symbol
+                </span>
+              </div>
             </div>
           </div>
 

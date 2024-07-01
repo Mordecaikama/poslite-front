@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FILE } from '../../../config'
+import { S3PATH } from '../../../config'
 
 function AddCategory({ addcat, upcat, cate, setCate, state, close }) {
   const [values, setValues] = useState({
@@ -85,6 +85,8 @@ function AddCategory({ addcat, upcat, cate, setCate, state, close }) {
         </span>
       </div>
 
+      <p style={{ fontSize: '0.75rem' }}>please use .png images</p>
+
       <div className='addcategory__main'>
         <form onSubmit={cate ? upCate : addCate}>
           <div className='newimage' title='click to add profile photo'>
@@ -123,7 +125,7 @@ function AddCategory({ addcat, upcat, cate, setCate, state, close }) {
               // this side is for edit; when an image exist
               // show image
               <label htmlFor='catimg' className='profile'>
-                <img src={`${FILE}/images/${photo}`} alt='' />
+                <img src={`${S3PATH}/${photo}`} alt='' />
                 <input
                   type='file'
                   id='catimg'

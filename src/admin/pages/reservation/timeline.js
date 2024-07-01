@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Context } from '../../../context'
-import { listtable } from '../../services/table'
+// import { listtable } from '../../services/table'
 
 function Timeline() {
   const { menu, setMenu, isAuthenticated } = useContext(Context)
@@ -11,24 +11,14 @@ function Timeline() {
   const user = isAuthenticated('user')
 
   useEffect(() => {
-    getAlltables()
+    // getAlltables()
     // loadStatusValues()
   }, [])
 
-  const getAlltables = async () => {
-    const res = await listtable(user?._id)
-    // console.log(res)
+  // const getAlltables = async () => {
+  //   const res = await listtable(user?._id)
 
-    if (res.data) {
-      // console.log(res.data[0]?.tables)
-      setTables(res.data[0]?.tables)
-      //  setOrders(res.data[0]?.orders)
-    }
-
-    // else {
-    //   console.log(res.error)
-    // }
-  }
+  // }
 
   return (
     <div className='container timeline__container'>

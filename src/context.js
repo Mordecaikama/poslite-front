@@ -50,7 +50,9 @@ function ContextProvider({ children }) {
     function (error) {
       let res = error.response
 
-      if (res.status === 401 && res.statusText === 'Unauthorized') {
+      // console.log(res.status)
+
+      if (res?.status === 401 && res.statusText === 'Unauthorized') {
         // console.log('JWT is ', res.statusText)
         localStorage.removeItem('token')
         localStorage.removeItem('user')

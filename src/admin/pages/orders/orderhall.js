@@ -37,7 +37,10 @@ function Orderhall({
                 data-for='tip'
                 data-tip={`select to add election to frontend`}
               />
-              <div className='table__name'>Table D1</div>
+              <div className='table__name'>
+                {' '}
+                <small>Table {order?.table}</small>
+              </div>
               <div className='order__number'>
                 Order {order?._id.slice(0, 5)}
               </div>
@@ -66,7 +69,7 @@ function Orderhall({
               </table>
               <div className='total'>
                 <span>Subtotal</span>
-                <span>$ {order?.amount}</span>
+                <span>$ {(order?.amount + order?.tax * 100).toFixed(2)}</span>
               </div>
 
               <div className='btn-group'>

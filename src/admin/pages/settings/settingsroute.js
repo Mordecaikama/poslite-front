@@ -40,7 +40,11 @@ function SettingRoute() {
   }, [notification])
 
   const handleSettChange = (name) => (event) => {
-    if (name === 'menufooter' || name === 'debitSidebar') {
+    if (
+      name === 'menufooter' ||
+      name === 'debitSidebar' ||
+      name === 'catImage'
+    ) {
       setAppsettings({ ...appsettings, [name]: !appsettings[name] })
     } else if (name === 'tax') {
       // divides by 100
